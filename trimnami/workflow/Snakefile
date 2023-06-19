@@ -1,0 +1,52 @@
+import glob
+import attrmap as ap
+import attrmap.utils as au
+
+
+configfile: os.path.join(workflow.basedir, '../', 'config', 'config.yaml')
+configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml')
+config = ap.AttrMap(config)
+
+
+def copy_log_file():
+    """Concatenate Snakemake's own logfile with the CLI logfile"""
+    files = glob.glob(os.path.join(".snakemake", "log", "*.snakemake.log"))
+    if files:
+        current_log = max(files, key=os.path.getmtime)
+        shell("cat " + current_log + " >> " + config['log'])
+
+onsuccess:
+    copy_log_file()
+
+onerror:
+    copy_log_file()
+
+
+# Import rules
+include: os.path.join("rules", "preflight.smk")
+
+
+# Mark target rules
+target_rules = []
+def targetRule(fn):
+    assert fn.__name__.startswith('__')
+    target_rules.append(fn.__name__[2:])
+    return fn
+
+
+@targetRule
+rule all:
+    input:
+        outTouch
+
+
+@targetRule
+rule print_targets:
+    run:
+        print("\nTop level rules are: \n", file=sys.stderr)
+        print("* " + "\n* ".join(target_rules) + "\n\n", file=sys.stderr)
+
+
+rule yeet:
+    output:
+        touch(outTouch)

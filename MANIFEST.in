@@ -1,0 +1,4 @@
+include trimnami/trimnami.LICENSE
+include trimnami/trimnami.CITATION
+include trimnami/trimnami.VERSION
+recursive-include trimnami *
