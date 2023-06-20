@@ -103,7 +103,8 @@ Change defaults:    trimnami run ... --snake-default="-k --nolock"
 Add Snakemake args: trimnami run ... --dry-run --keep-going --touch
 Specify targets:    trimnami run ... all print_targets
 Available targets:
-    all             Run everything (default)
+    fastp           Trim reads with fastp (default)
+    prinseq         Trim reads with prinseq++
     print_targets   List available targets
 """
 
@@ -115,14 +116,16 @@ Available targets:
     ),
 )
 @click.option("--reads", help="Input file/directory", type=str, required=True)
+@click.option('--host', help='Host genome (fasta or minimap2 index) for filtering', show_default=False, required=False)
 @common_options
-def run(reads, output, log, **kwargs):
+def run(reads, output, host, log, **kwargs):
     """Run Trimnami"""
     # Config to add or update in configfile
     merge_config = {
         "args": {
             "reads": reads,
             "output": output,
+            "host": host,
             "log": log
         }
     }

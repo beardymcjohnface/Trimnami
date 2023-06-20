@@ -1,0 +1,17 @@
+resources:
+  job:
+    cpu: 8
+    mem: 16000
+    time: 480
+
+qc:
+    compression: 1      # Compression level for gzip output (1 ~ 9). 1 is fastest, 9 is smallest
+    fastp:
+        --qualified_quality_phred 15
+        --length_required 90
+        --cut_tail 
+        --cut_tail_window_size 25
+        --cut_tail_mean_quality 15
+        --dedup
+        --dup_calc_accuracy 4
+        --trim_poly_x

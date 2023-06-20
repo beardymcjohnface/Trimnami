@@ -35,9 +35,21 @@ def targetRule(fn):
 
 
 @targetRule
-rule all:
+rule fastp:
     input:
-        outTouch
+        targets.fastp
+
+
+@targetRule
+rule prinseq:
+    input:
+        targets.prinseq
+
+
+@targetRule
+rule roundAB:
+    input:
+        targets.roundAB
 
 
 @targetRule
@@ -45,8 +57,3 @@ rule print_targets:
     run:
         print("\nTop level rules are: \n", file=sys.stderr)
         print("* " + "\n* ".join(target_rules) + "\n\n", file=sys.stderr)
-
-
-rule yeet:
-    output:
-        touch(outTouch)
