@@ -8,8 +8,8 @@ rule fastp_paired_end:
         r1=os.path.join(dir.fastp,"{file}.R1.fastq.gz"),
         r2=os.path.join(dir.fastp,"{file}.R2.fastq.gz"),
         s=os.path.join(dir.fastp,"{file}.S.fastq.gz"),
-        s1=os.path.join(dir.fastp,"{file}.S1.fastq.gz"),
-        s2=os.path.join(dir.fastp,"{file}.S2.fastq.gz"),
+        s1=temp(os.path.join(dir.fastp,"{file}.S1.fastq.gz")),
+        s2=temp(os.path.join(dir.fastp,"{file}.S2.fastq.gz")),
         stats=temp(os.path.join(dir.fastp,"{file}.stats.json")),
         html=temp(os.path.join(dir.fastp,"{file}.stats.html"))
     benchmark:
