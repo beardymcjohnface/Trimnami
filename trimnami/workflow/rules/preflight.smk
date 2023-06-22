@@ -9,7 +9,6 @@ Parse the samples with metasnek
 samples = ap.AttrMap()
 samples.reads = fastq_finder.parse_samples_to_dictionary(config.args.reads)
 samples.names = list(ap.utils.get_keys(samples.reads))
-samples = au.convert_state(samples, read_only=True)
 
 
 """
@@ -41,26 +40,34 @@ targets = ap.AttrMap()
 
 # remove host?
 config.args.hostStr = ""
-if config.args.host:
-    config.args.hostStr = ".host_removed"
+if config.args.host is not None:
+    config.args.hostStr = ".host_rm"
 
 # generate target base names
 for sample_name in samples.names:
-    if samples.reads[sample_name]["R2"]:
+    if samples.reads[sample_name]["R2"] is not None:
         samples.reads[sample_name]["targetNames"] = expand(
-            sample_name + ".paired" + config.args.hostStr + "{R12}.fastq.gz",
-            R12 = ["R1", "R2"]
+            sample_name + config.args.hostStr + ".paired" + "{R12}.fastq.gz",
+            R12 = [".R1", ".R2", ".S"]
         )
     else:
-        samples.reads[sample_name]["targetNames"] = [sample_name + ".single" + config.args.hostStr + ".fastq.gz"]
+        samples.reads[sample_name]["targetNames"] = [sample_name + config.args.hostStr + ".single" + ".fastq.gz"]
+
+
+# lock samples from further changes
+samples = au.convert_state(samples, read_only=True)
+
 
 # target lists
 targets.fastp = []
 targets.prinseq = []
 targets.roundAB = []
+targets.reports = [
+    os.path.join(dir.out,"samples.tsv"),
+]
 
 # populate target lists
 for sample_name in samples.names:
-    targets.fastp.append(os.path.join(dir.fastp, "{file}"), file=samples.reads[sample_name]["targetNames"])
-    targets.prinseq.append(os.path.join(dir.prinseq, "{file}"), file=samples.reads[sample_name]["targetNames"])
-    targets.roundAB.append(os.path.join(dir.roundAB, "{file}"), file=samples.reads[sample_name]["targetNames"])
+    targets.fastp.append(expand(os.path.join(dir.fastp, "{file}"), file=samples.reads[sample_name]["targetNames"]))
+    targets.prinseq.append(expand(os.path.join(dir.prinseq, "{file}"), file=samples.reads[sample_name]["targetNames"]))
+    targets.roundAB.append(expand(os.path.join(dir.roundAB, "{file}"), file=samples.reads[sample_name]["targetNames"]))

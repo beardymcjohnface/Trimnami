@@ -13,7 +13,7 @@ def copy_log_file():
     files = glob.glob(os.path.join(".snakemake", "log", "*.snakemake.log"))
     if files:
         current_log = max(files, key=os.path.getmtime)
-        shell("cat " + current_log + " >> " + config['log'])
+        shell("cat " + current_log + " >> " + config.args['log'])
 
 onsuccess:
     copy_log_file()
@@ -24,6 +24,10 @@ onerror:
 
 # Import rules
 include: os.path.join("rules", "preflight.smk")
+include: os.path.join("rules", "fastp.smk")
+include: os.path.join("rules", "prinseq.smk")
+include: os.path.join("rules", "hostRemoval.smk")
+include: os.path.join("rules", "reports.smk")
 
 
 # Mark target rules
@@ -37,19 +41,22 @@ def targetRule(fn):
 @targetRule
 rule fastp:
     input:
-        targets.fastp
+        targets.fastp,
+        targets.reports
 
 
 @targetRule
 rule prinseq:
     input:
-        targets.prinseq
+        targets.prinseq,
+        targets.reports
 
 
 @targetRule
 rule roundAB:
     input:
-        targets.roundAB
+        targets.roundAB,
+        targets.reports
 
 
 @targetRule

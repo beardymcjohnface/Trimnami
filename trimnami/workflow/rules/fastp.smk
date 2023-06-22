@@ -1,17 +1,19 @@
 rule fastp_paired_end:
     """Read trimming with fastp for paired reads"""
     input:
-        r1=lambda wildcards: samples.reads[wildcards.sample]["R1"],
-        r2=lambda wildcards: samples.reads[wildcards.sample]["R2"],
+        r1=os.path.join(dir.temp,"{file}.R1.fastq.gz"),
+        r2=os.path.join(dir.temp,"{file}.R2.fastq.gz"),
+        s=os.path.join(dir.temp,"{file}.S.fastq.gz"),
     output:
-        r1=temp(os.path.join(dir.temp,"fastp","{sample}.paired.R1.fastq.gz")),
-        r2=temp(os.path.join(dir.temp,"fastp","{sample}.paired.R2.fastq.gz")),
-        stats=os.path.join(dir.temp,"fastp","{sample}.stats.json"),
-        html=temp(os.path.join(dir.temp,"fastp","{sample}.stats.html"))
+        r1=os.path.join(dir.fastp,"{file}.R1.fastq.gz"),
+        r2=os.path.join(dir.fastp,"{file}.R2.fastq.gz"),
+        s=os.path.join(dir.fastp,"{file}.S.fastq.gz"),
+        stats=temp(os.path.join(dir.fastp,"{file}.stats.json")),
+        html=temp(os.path.join(dir.fastp,"{file}.stats.html"))
     benchmark:
-        os.path.join(dir.bench,"fastp.{sample}.txt")
+        os.path.join(dir.bench,"fastp.{file}.txt")
     log:
-        os.path.join(dir.log,"fastp.{sample}.log")
+        os.path.join(dir.log,"fastp.{file}.log")
     resources:
         mem_mb=config.resources.job.mem,
         time=config.resources.job.time
@@ -27,21 +29,29 @@ rule fastp_paired_end:
         fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} \
             -z {params.compression} -j {output.stats} -h {output.html} --thread {threads} \
             --detect_adapter_for_pe {params.fastp} 2> {log}
+        if [[ -s {input.s} ]]
+        then
+            fastp -i {input.s} -o {output.s} \
+                -z {params.compression} -j {output.stats} -h {output.html} --thread {threads} \
+                --detect_adapter_for_pe {params.fastp} 2> {log}
+        else
+            touch {output.s}
+        fi
         """
 
 
 rule fastp_single_end:
     """Read trimming with fastp for single end reads"""
     input:
-        r1=lambda wildcards: samples.reads[wildcards.sample]["R1"],
+        r1=os.path.join(dir.temp,"{file}.single.fastq.gz"),
     output:
-        r1=temp(os.path.join(dir.temp,"fastp","{sample}.single.fastq.gz")),
-        stats=temp(os.path.join(dir.temp,"fastp","{sample}.stats.json")),
-        html=temp(os.path.join(dir.temp,"fastp","{sample}.stats.html"))
+        r1=os.path.join(dir.fastp,"{file}.single.fastq.gz"),
+        stats=temp(os.path.join(dir.fastp,"{file}.stats.json")),
+        html=temp(os.path.join(dir.fastp,"{file}.stats.html"))
     benchmark:
-        os.path.join(dir.bench,"fastp.{sample}.txt")
+        os.path.join(dir.bench,"fastp.{file}.txt")
     log:
-        os.path.join(dir.log,"fastp.{sample}.log")
+        os.path.join(dir.log,"fastp.{file}.log")
     resources:
         mem_mb=config.resources.job.mem,
         time=config.resources.job.time
@@ -58,15 +68,3 @@ rule fastp_single_end:
             -z {params.compression} -j {output.stats} -h {output.html} --thread {threads} \
             --detect_adapter_for_pe {params.fastp} 2> {log}
         """
-
-
-rule skip_host_removal_fastp:
-    input:
-        os.path.join(dir.temp, "fastp", "{filename}")
-    output:
-        os.path.join(dir.fastp, "{filename}")
-    localrule:
-        True
-    run:
-        import os
-        os.rename(input[0], output[0])

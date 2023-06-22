@@ -30,13 +30,13 @@ def common_options(func):
         ),
         click.option(
             "--configfile",
-            default="config.yaml",
+            default="trimnami.config.yaml",
             show_default=False,
             callback=default_to_output,
-            help="Custom config file [default: (outputDir)/config.yaml]",
+            help="Custom config file [default: (outputDir)/trimnami.config.yaml]",
         ),
         click.option(
-            "--threads", help="Number of threads to use", default=1, show_default=True
+            "--threads", help="Number of threads to use", default=8, show_default=True
         ),
         click.option(
             "--use-conda/--no-use-conda",
@@ -86,6 +86,18 @@ def cli():
     For more options, run:
     trimnami command --help"""
     pass
+
+
+def print_splash():
+    click.echo("""
+\b
+████████╗██████╗ ██╗███╗   ███╗███╗   ██╗ █████╗ ███╗   ███╗██╗
+╚══██╔══╝██╔══██╗██║████╗ ████║████╗  ██║██╔══██╗████╗ ████║██║
+   ██║   ██████╔╝██║██╔████╔██║██╔██╗ ██║███████║██╔████╔██║██║
+   ██║   ██╔══██╗██║██║╚██╔╝██║██║╚██╗██║██╔══██║██║╚██╔╝██║██║
+   ██║   ██║  ██║██║██║ ╚═╝ ██║██║ ╚████║██║  ██║██║ ╚═╝ ██║██║
+   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝
+""")
 
 
 help_msg_extra = """
@@ -140,6 +152,64 @@ def run(reads, output, host, log, **kwargs):
     )
 
 
+@click.command(
+    epilog=help_msg_extra,
+    context_settings=dict(
+        help_option_names=["-h", "--help"], ignore_unknown_options=True
+    ),
+)
+@common_options
+def test(output, log, **kwargs):
+    """Run Trimnami with the test dataset"""
+    # Config to add or update in configfile
+    merge_config = {
+        "args": {
+            "reads": snake_base(os.path.join("test_data")),
+            "host": None,
+            "output": output,
+            "log": log
+        }
+    }
+
+    # run!
+    run_snakemake(
+        # Full path to Snakefile
+        snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        merge_config=merge_config,
+        log=log,
+        **kwargs
+    )
+
+
+@click.command(
+    epilog=help_msg_extra,
+    context_settings=dict(
+        help_option_names=["-h", "--help"], ignore_unknown_options=True
+    ),
+)
+@common_options
+def testhost(output, log, **kwargs):
+    """Run Trimnami with the test dataset and test host"""
+    # Config to add or update in configfile
+    merge_config = {
+        "args": {
+            "reads": snake_base(os.path.join("test_data")),
+            "host": snake_base(os.path.join("test_data", "ref.idx")),
+            "output": output,
+            "log": log
+        }
+    }
+
+    # run!
+    run_snakemake(
+        # Full path to Snakefile
+        snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        merge_config=merge_config,
+        log=log,
+        **kwargs
+    )
+
+
 @click.command()
 @common_options
 def config(configfile, **kwargs):
@@ -154,11 +224,14 @@ def citation(**kwargs):
 
 
 cli.add_command(run)
+cli.add_command(test)
+cli.add_command(testhost)
 cli.add_command(config)
 cli.add_command(citation)
 
 
 def main():
+    print_splash()
     cli()
 
 

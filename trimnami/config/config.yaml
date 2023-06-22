@@ -5,7 +5,7 @@ resources:
     time: 480
 
 qc:
-    compression: 1      # Compression level for gzip output (1 ~ 9). 1 is fastest, 9 is smallest
+    compression: 1
     fastp:
         --qualified_quality_phred 15
         --length_required 90
@@ -15,3 +15,16 @@ qc:
         --dedup
         --dup_calc_accuracy 4
         --trim_poly_x
+    prinseq:
+        -min_len 60 
+        -min_qual_mean 25 
+        -ns_max_n 1 
+        -derep 1
+        -out_format 0 
+        -trim_tail_left 5 
+        -trim_tail_right 5
+        -ns_max_n 5  
+        -trim_qual_type min 
+        -trim_qual_left 30
+        -trim_qual_right 30 
+        -trim_qual_window 10
