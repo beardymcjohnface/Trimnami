@@ -31,6 +31,7 @@ dir.log = os.path.join(dir.out, "logs")
 dir.fastp = os.path.join(dir.out, "fastp")
 dir.prinseq = os.path.join(dir.out, "prinseq")
 dir.roundAB = os.path.join(dir.out, "roundAB")
+dir.nanopore = os.path.join(dir.out, "nanopore")
 dir.bench = os.path.join(dir.out, "benchmarks")
 
 
@@ -63,6 +64,7 @@ samples = au.convert_state(samples, read_only=True)
 targets.fastp = []
 targets.prinseq = []
 targets.roundAB = []
+targets.nanopore = []
 targets.reports = [
     os.path.join(dir.out,"samples.tsv"),
 ]
@@ -72,3 +74,4 @@ for sample_name in samples.names:
     targets.fastp.append(expand(os.path.join(dir.fastp, "{file}"), file=samples.reads[sample_name]["targetNames"]))
     targets.prinseq.append(expand(os.path.join(dir.prinseq, "{file}"), file=samples.reads[sample_name]["targetNames"]))
     targets.roundAB.append(expand(os.path.join(dir.roundAB, "{file}"), file=samples.reads[sample_name]["targetNames"]))
+    targets.nanopore.append(expand(os.path.join(dir.nanopore, "{file}"), file=samples.reads[sample_name]["targetNames"]))

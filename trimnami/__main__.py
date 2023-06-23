@@ -118,6 +118,7 @@ Available targets:
     fastp           Trim reads with fastp (default)
     prinseq         Trim reads with prinseq++
     roundAB         Trim round A/B viral metagenome reads
+    nanopore        Trim nanopore reads
     print_targets   List available targets
 """
 
@@ -130,8 +131,10 @@ Available targets:
 )
 @click.option("--reads", help="Input file/directory", type=str, required=True)
 @click.option('--host', help='Host genome (fasta or minimap2 index) for filtering', show_default=False, required=False)
+@click.option("--minimap", help="Minimap preset", default="sr", show_default=True,
+              type=click.Choice(["map-pb", "map-ont", "map-hifi", "sr"]))
 @common_options
-def run(reads, output, host, log, **kwargs):
+def run(reads, output, host, minimap, log, **kwargs):
     """Run Trimnami"""
     # Config to add or update in configfile
     merge_config = {
@@ -139,6 +142,7 @@ def run(reads, output, host, log, **kwargs):
             "reads": reads,
             "output": output,
             "host": host,
+            "minimap": minimap,
             "log": log
         }
     }
@@ -168,6 +172,7 @@ def test(output, log, **kwargs):
             "reads": snake_base(os.path.join("test_data")),
             "host": None,
             "output": output,
+            "minimap": "sr",
             "log": log
         }
     }
@@ -197,6 +202,7 @@ def testhost(output, log, **kwargs):
             "reads": snake_base(os.path.join("test_data")),
             "host": snake_base(os.path.join("test_data", "ref.idx")),
             "output": output,
+            "minimap": "sr",
             "log": log
         }
     }
@@ -207,6 +213,38 @@ def testhost(output, log, **kwargs):
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
         merge_config=merge_config,
         log=log,
+        **kwargs
+    )
+
+
+@click.command(
+    epilog=help_msg_extra,
+    context_settings=dict(
+        help_option_names=["-h", "--help"], ignore_unknown_options=True
+    ),
+)
+@common_options
+def testnp(output, log, snake_args, **kwargs):
+    """Run Trimnami with the test dataset and test host"""
+    # Config to add or update in configfile
+    merge_config = {
+        "args": {
+            "reads": snake_base(os.path.join("test_data", "nanopore")),
+            "host": snake_base(os.path.join("test_data", "ref.idx")),
+            # "host": None,
+            "output": output,
+            "minimap": "map-ont",
+            "log": log
+        }
+    }
+
+    # run!
+    run_snakemake(
+        # Full path to Snakefile
+        snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        merge_config=merge_config,
+        log=log,
+        snake_args=["nanopore"],
         **kwargs
     )
 
@@ -227,6 +265,7 @@ def citation(**kwargs):
 cli.add_command(run)
 cli.add_command(test)
 cli.add_command(testhost)
+cli.add_command(testnp)
 cli.add_command(config)
 cli.add_command(citation)
 

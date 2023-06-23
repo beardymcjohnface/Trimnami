@@ -44,7 +44,8 @@ rule host_removal_mapping_single:
         s=temp(os.path.join(dir.temp,"{sample}.host_rm.single.S.fastq.gz")),
         o=temp(os.path.join(dir.temp,"{sample}.host_rm.single.O.fastq.gz")),
     params:
-        compression=config.qc.compression
+        compression=config.qc.compression,
+        minimap_mode=config.args.minimap
     benchmark:
         os.path.join(dir.bench,"host_removal_mapping.{sample}.txt")
     log:
@@ -60,7 +61,7 @@ rule host_removal_mapping_single:
         os.path.join(dir.env,"minimap2.yaml")
     shell:
         """
-        minimap2 -ax sr -t {threads} --secondary=no {input.host} {input.r1} 2> {log.mm} \
+        minimap2 -ax {params.minimap_mode} -t {threads} --secondary=no {input.host} {input.r1} 2> {log.mm} \
             | samtools view -f 4 -h 2> {log.sv} \
             | samtools fastq -nO -c {params.compression} -o {output.r1} -0 {output.o} -s {output.s} 2> {log.fq}
         cat {output.o} {output.s} >> {output.r1}
