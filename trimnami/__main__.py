@@ -117,6 +117,7 @@ Specify targets:    trimnami run ... all print_targets
 Available targets:
     fastp           Trim reads with fastp (default)
     prinseq         Trim reads with prinseq++
+    roundAB         Trim round A/B viral metagenome reads
     print_targets   List available targets
 """
 

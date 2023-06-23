@@ -26,6 +26,7 @@ onerror:
 include: os.path.join("rules", "preflight.smk")
 include: os.path.join("rules", "fastp.smk")
 include: os.path.join("rules", "prinseq.smk")
+include: os.path.join("rules", "roundAB.smk")
 include: os.path.join("rules", "hostRemoval.smk")
 include: os.path.join("rules", "reports.smk")
 

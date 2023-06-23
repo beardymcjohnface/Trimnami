@@ -17,7 +17,8 @@ Define directories
 dir = ap.AttrMap()
 dir.base = os.path.join(workflow.basedir, "..")
 dir.env = os.path.join(workflow.basedir, "envs")
-dir.scripts = os.path.join(dir.base, "scripts")
+dir.scripts = os.path.join(workflow.basedir, "scripts")
+dir.db = os.path.join(workflow.basedir, "databases")
 
 try:
     assert(ap.utils.to_dict(config.args)["output"]) is not None

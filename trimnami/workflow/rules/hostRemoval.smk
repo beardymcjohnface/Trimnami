@@ -76,13 +76,15 @@ rule skip_host_rm_paired:
         r1 = temp(os.path.join(dir.temp,"{sample}.paired.R1.fastq.gz")),
         r2 = temp(os.path.join(dir.temp,"{sample}.paired.R2.fastq.gz")),
         s = temp(os.path.join(dir.temp,"{sample}.paired.S.fastq.gz")),
+    params:
+        is_paired = True
     localrule:
         True
-    run:
-        import os
-        os.symlink(input.r1,output.r1)
-        os.symlink(input.r2,output.r2)
-        open(output.s,"w").close()
+    log:
+        stderr = os.path.join(dir.log, "skip_host_rm_pair.{sample}.err"),
+        stdout = os.path.join(dir.log, "skip_host_rm_pair.{sample}.out")
+    script:
+        os.path.join(dir.scripts, "skipHostRm.py")
 
 
 rule skip_host_rm_single:
@@ -91,8 +93,9 @@ rule skip_host_rm_single:
         r1 = lambda wildcards: samples.reads[wildcards.sample]["R1"],
     output:
         r1 = temp(os.path.join(dir.temp,"{sample}.single.fastq.gz")),
+    params:
+        is_paired = False
     localrule:
         True
-    run:
-        import os
-        os.symlink(input.r1,output.r1)
+    script:
+        os.path.join(dir.scripts, "skipHostRm.py")

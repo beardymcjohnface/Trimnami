@@ -19,7 +19,9 @@ rule prinseq_paired:
     params:
         params = config.qc.prinseq
     log:
-        os.path.join(dir.log, "prinseq_{file}.log")
+        os.path.join(dir.log, "prinseq.{file}.log")
+    benchmark:
+        os.path.join(dir.bench,"prinseq.{file}.txt")
     shell:
         """
         prinseq++ {params.params} \
@@ -32,7 +34,7 @@ rule prinseq_paired:
             -out_bad /dev/null \
             -out_bad2 /dev/null \
             -fastq {input.r1} \
-            -fastq2 {input.r2}  2> {log}
+            -fastq2 {input.r2}  &> {log}
         if [[ -s {input.s} ]]
         then
             prinseq++ {params.params} \
@@ -40,7 +42,7 @@ rule prinseq_paired:
                 -threads {threads} \
                 -out_good {output.s} \
                 -out_bad /dev/null \
-                -fastq {input.r1} 2> {log}
+                -fastq {input.r1} &> {log}
         else
             touch {output.s}
         fi
@@ -63,7 +65,9 @@ rule prinseq_single:
     params:
         params = config.qc.prinseq
     log:
-        os.path.join(dir.log, "prinseq_{file}.log")
+        os.path.join(dir.log, "prinseq.{file}.log")
+    benchmark:
+        os.path.join(dir.bench,"prinseq.{file}.txt")
     shell:
         """
         prinseq++ {params.params} \
@@ -71,5 +75,5 @@ rule prinseq_single:
             -threads {threads} \
             -out_good {output.r1} \
             -out_bad /dev/null \
-            -fastq {input.r1} 2> {log}
+            -fastq {input.r1} &> {log}
         """
