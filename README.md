@@ -75,5 +75,4 @@ trimnami run --reads reads/  --host host_genome.fasta  --minimap map-ont  nanopo
 ## Parsing sample names and reads
 
 Samples are parsed using MetaSnek fastq_finder:
-
-<script src="https://gist.github.com/beardymcjohnface/bb161ba04ae1042299f48a4849e917c8.js"></script>
+[Parsing samples with MetaSnek](https://gist.github.com/beardymcjohnface/bb161ba04ae1042299f48a4849e917c8)
