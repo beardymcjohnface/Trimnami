@@ -1,10 +1,32 @@
+rule index_host_genome:
+    """Pre-index the host genome for mapping with minimap2"""
+    input:
+        lambda wildcards: config.args.host if config.args.host else ""
+    output:
+        config.args.hostIndex
+    params:
+        params = config.qc.minimapIndex
+    resources:
+        mem_mb=config.resources.job.mem,
+        time=config.resources.job.time
+    threads:
+        config.resources.job.cpu
+    conda:
+        os.path.join(dir.env,"minimap2.yaml")
+    benchmark:
+        os.path.join(dir.bench,"index_host_genome.txt")
+    log:
+        os.path.join(dir.log,"index_host_genome.log")
+    shell:
+        """minimap2 -t {threads} {params} -d {output} {input} &> {log}"""
+
 
 rule host_removal_mapping_paired:
     """Map reads to host and return unmapped reads"""
     input:
         r1=lambda wildcards: samples.reads[wildcards.sample]["R1"],
         r2=lambda wildcards: samples.reads[wildcards.sample]["R2"],
-        host=lambda wildcards: config.args.host if config.args.host else ""
+        host=lambda wildcards: config.args.hostIndex if config.args.host else ""
     output:
         r1=temp(os.path.join(dir.temp,"{sample}.host_rm.paired.R1.fastq.gz")),
         r2=temp(os.path.join(dir.temp,"{sample}.host_rm.paired.R2.fastq.gz")),
@@ -38,7 +60,7 @@ rule host_removal_mapping_single:
     """Map reads to host and return unmapped reads"""
     input:
         r1=lambda wildcards: samples.reads[wildcards.sample]["R1"],
-        host=lambda wildcards: config.args.host if config.args.host else ""
+        host=lambda wildcards: config.args.hostIndex if config.args.host else ""
     output:
         r1=temp(os.path.join(dir.temp,"{sample}.host_rm.single.fastq.gz")),
         s=temp(os.path.join(dir.temp,"{sample}.host_rm.single.S.fastq.gz")),

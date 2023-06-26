@@ -6,6 +6,8 @@ resources:
 
 qc:
     compression: 1
+    minimapIndex:
+        -I 8G
     fastp:
         --qualified_quality_phred 15
         --length_required 90

@@ -130,7 +130,7 @@ Available targets:
     ),
 )
 @click.option("--reads", help="Input file/directory", type=str, required=True)
-@click.option('--host', help='Host genome (fasta or minimap2 index) for filtering', show_default=False, required=False)
+@click.option('--host', help='Host genome fasta for filtering', show_default=False, required=False)
 @click.option("--minimap", help="Minimap preset", default="sr", show_default=True,
               type=click.Choice(["map-pb", "map-ont", "map-hifi", "sr"]))
 @common_options
@@ -200,7 +200,7 @@ def testhost(output, log, **kwargs):
     merge_config = {
         "args": {
             "reads": snake_base(os.path.join("test_data")),
-            "host": snake_base(os.path.join("test_data", "ref.idx")),
+            "host": snake_base(os.path.join("test_data", "ref.fna")),
             "output": output,
             "minimap": "sr",
             "log": log
@@ -230,7 +230,7 @@ def testnp(output, log, snake_args, **kwargs):
     merge_config = {
         "args": {
             "reads": snake_base(os.path.join("test_data", "nanopore")),
-            "host": snake_base(os.path.join("test_data", "ref.idx")),
+            "host": snake_base(os.path.join("test_data", "ref.fna")),
             # "host": None,
             "output": output,
             "minimap": "map-ont",

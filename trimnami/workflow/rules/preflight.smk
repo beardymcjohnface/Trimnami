@@ -36,14 +36,27 @@ dir.bench = os.path.join(dir.out, "benchmarks")
 
 
 """
+Define file intermediates
+"""
+# Check if host removal
+config.args.hostStr = ""
+config.args.hostIndex = ""
+if config.args.host is not None:
+    # String to append to targets to signal host removal
+    config.args.hostStr = ".host_rm"
+    # Minimap2 index file for mapping
+    config.args.hostIndex = os.path.join(
+        dir.temp,
+        os.path.splitext(
+            os.path.basename(config.args.host)
+        )[0] + ".idx"
+    )
+
+
+"""
 Define targets
 """
 targets = ap.AttrMap()
-
-# remove host?
-config.args.hostStr = ""
-if config.args.host is not None:
-    config.args.hostStr = ".host_rm"
 
 # generate target base names
 for sample_name in samples.names:
