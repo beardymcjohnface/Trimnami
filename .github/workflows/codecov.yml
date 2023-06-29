@@ -6,8 +6,20 @@ name: "Codecov"
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - '.github/**'
+      - 'build/**'
+      - 'tests/**'
+      - 'trimnami/**'
+      - 'setup.py'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - '.github/**'
+      - 'build/**'
+      - 'tests/**'
+      - 'trimnami/**'
+      - 'setup.py'
 
 permissions:
   contents: read
@@ -38,7 +50,7 @@ jobs:
           mamba-version: "*"
           channel-priority: false
           activate-environment: trimnami
-          environment-file: build/environment.yaml
+#          environment-file: build/environment.yaml
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
 
