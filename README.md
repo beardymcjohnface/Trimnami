@@ -82,10 +82,29 @@ trimnami run \
     nanopore
 ```
 
-## Parsing sample names and reads
+## Parsing samples with `--reads`
 
-Samples are parsed using MetaSnek fastq_finder:
-[Parsing samples with MetaSnek](https://gist.github.com/beardymcjohnface/bb161ba04ae1042299f48a4849e917c8)
+You can pass either a directory of reads or a TSV file to `--reads`.
+ - __Directory:__ Trimnami will infer sample names and \_R1/\_R2 pairs from the filenames.
+ - __TSV file:__ Trimnami expects 2 or 3 columns, with column 1 being the sample name and columns 2 and 3 the reads files.
+
+__[More information and examples here](https://gist.github.com/beardymcjohnface/bb161ba04ae1042299f48a4849e917c8#file-readme-md)__
+
+## Configure trimming parameters
+
+You can customise the trimming parameters via the config file.
+Copy the default config file.
+
+```shell
+trimnami config
+```
+
+Then edit the config file `trimnami.out/trimnami.config.yaml` in your favourite text editor.
+Run trimnami like normal, or point to your custom config file if you've moved it.
+
+```shell
+trimnami run ... --configfile /my/awesome/config.yaml
+```
 
 ## Outputs
 
@@ -94,19 +113,64 @@ e.g. if trimming with Fastp or Prinseq++,
 trimmed reads will be in `trimnami.out/fastp/` or `trimnami.out/prinseq/`.
 Paired reads will yield three files: 
 The R1 and R2 paired reads, and any singletons from trimming or host removal.
-Example output:
+
+
+<details>
+    <summary><b>If you run all the tests you should get this</b></summary>
 
 ```text
-# paired reads
-sampleName.paired.R1.fastq.gz
-sampleName.paired.R2.fastq.gz
-sampleName.paired.S.fastq.gz
+trimnami.out/
+├── fastp
+│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
+│   ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
+│   └── A13-135-177-06_AGTTCC.single.fastq.gz
+├── nanopore
+│   ├── SRR7947171.host_rm.single.fastq.gz
+│   └── SRR7947176.host_rm.single.fastq.gz
+├── prinseq
+│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
+│   ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
+│   └── A13-135-177-06_AGTTCC.single.fastq.gz
+└── roundAB
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
+    ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
+    ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
+    ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
+    ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
+    ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
+    ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
+    ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
+    └── A13-135-177-06_AGTTCC.single.fastq.gz
 
-# unpaired
-sampleName.single.fastq.gz
-
-# paired with host removal
-sampleName.host_rm.paired.R1.fastq.gz
-sampleName.host_rm.paired.R2.fastq.gz
-sampleName.host_rm.paired.S.fastq.gz
 ```
+
+</details>
+
+
