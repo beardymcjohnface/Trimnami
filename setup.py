@@ -41,7 +41,7 @@ CLASSIFIERS = [
 setup(
     name="trimnami",
     packages=find_packages(),
-    url="github.com/beardymcjohnface/Trimnami",
+    url="https://github.com/beardymcjohnface/Trimnami",
     python_requires=">=3.8",
     description="Trim lots of metagenomics samples all at once.",
     long_description=get_description(),
