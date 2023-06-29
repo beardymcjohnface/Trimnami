@@ -5,15 +5,37 @@ Entrypoint for Trimnami
 import os
 import click
 
-from .util import (
-    snake_base,
-    get_version,
-    default_to_output,
-    copy_config,
-    run_snakemake,
-    OrderedCommands,
-    print_citation,
-)
+from snaketool_utils.cli_utils import OrderedCommands, run_snakemake, copy_config, echo_click
+
+
+def snake_base(rel_path):
+    """Get the filepath to a Snaketool system file (relative to __main__.py)
+
+    Args:
+        rel_path (str): Filepath relative to __main__.py
+
+    Returns (str): Resolved filepath
+    """
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), rel_path)
+
+
+def get_version():
+    with open(snake_base("trimnami.VERSION"), "r") as f:
+        version = f.readline()
+    return version
+
+
+def print_citation():
+    with open(snake_base("trimnami.CITATION"), "r") as f:
+        for line in f:
+            echo_click(line)
+
+
+def default_to_output(ctx, param, value):
+    """Callback for click options; places value in output directory unless specified"""
+    if param.default == value:
+        return os.path.join(ctx.params["output"], value)
+    return value
 
 
 def common_options(func):
@@ -134,16 +156,16 @@ Available targets:
 @click.option("--minimap", help="Minimap preset", default="sr", show_default=True,
               type=click.Choice(["map-pb", "map-ont", "map-hifi", "sr"]))
 @common_options
-def run(reads, output, host, minimap, log, **kwargs):
+def run(**kwargs):
     """Run Trimnami"""
     # Config to add or update in configfile
     merge_config = {
         "args": {
-            "reads": reads,
-            "output": output,
-            "host": host,
-            "minimap": minimap,
-            "log": log
+            "reads": kwargs["reads"],
+            "output": kwargs["output"],
+            "host": kwargs["host"],
+            "minimap": kwargs["minimap"],
+            "log": kwargs["log"]
         }
     }
 
@@ -151,8 +173,8 @@ def run(reads, output, host, minimap, log, **kwargs):
     run_snakemake(
         # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
-        log=log,
         **kwargs
     )
 
@@ -164,16 +186,16 @@ def run(reads, output, host, minimap, log, **kwargs):
     ),
 )
 @common_options
-def test(output, log, **kwargs):
+def test(**kwargs):
     """Run Trimnami with the test dataset"""
     # Config to add or update in configfile
     merge_config = {
         "args": {
             "reads": snake_base(os.path.join("test_data")),
             "host": None,
-            "output": output,
+            "output": kwargs["output"],
             "minimap": "sr",
-            "log": log
+            "log": kwargs["log"]
         }
     }
 
@@ -181,8 +203,8 @@ def test(output, log, **kwargs):
     run_snakemake(
         # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
-        log=log,
         **kwargs
     )
 
@@ -194,16 +216,16 @@ def test(output, log, **kwargs):
     ),
 )
 @common_options
-def testhost(output, log, **kwargs):
+def testhost(**kwargs):
     """Run Trimnami with the test dataset and test host"""
     # Config to add or update in configfile
     merge_config = {
         "args": {
             "reads": snake_base(os.path.join("test_data")),
             "host": snake_base(os.path.join("test_data", "ref.fna")),
-            "output": output,
+            "output": kwargs["output"],
             "minimap": "sr",
-            "log": log
+            "log": kwargs["log"]
         }
     }
 
@@ -211,8 +233,8 @@ def testhost(output, log, **kwargs):
     run_snakemake(
         # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
-        log=log,
         **kwargs
     )
 
@@ -224,17 +246,16 @@ def testhost(output, log, **kwargs):
     ),
 )
 @common_options
-def testnp(output, log, snake_args, **kwargs):
+def testnp(**kwargs):
     """Run Trimnami with the test dataset and test host"""
     # Config to add or update in configfile
     merge_config = {
         "args": {
             "reads": snake_base(os.path.join("test_data", "nanopore")),
             "host": snake_base(os.path.join("test_data", "ref.fna")),
-            # "host": None,
-            "output": output,
+            "output": kwargs["output"],
             "minimap": "map-ont",
-            "log": log
+            "log": kwargs["log"]
         }
     }
 
@@ -242,8 +263,8 @@ def testnp(output, log, snake_args, **kwargs):
     run_snakemake(
         # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
+        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
-        log=log,
         snake_args=["nanopore"],
         **kwargs
     )

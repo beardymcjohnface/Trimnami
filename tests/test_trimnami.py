@@ -36,14 +36,14 @@ def exec_command(cmnd, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
     return out.decode("utf8") if out is not None else None
 
 
-def test_koverage_cli(tmp_dir):
+def test_trimnami_cli(tmp_dir):
     exec_command("trimnami -v")
     exec_command("trimnami -h")
     exec_command("trimnami run -h")
     exec_command("trimnami config -h")
 
 
-def test_koverage_commands(tmp_dir):
+def test_trimnami_commands(tmp_dir):
     exec_command("trimnami test --threads 1 -n prinseq fastp roundAB nanopore")
     exec_command("trimnami config")
     exec_command("trimnami citation")
