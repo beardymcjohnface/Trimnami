@@ -32,6 +32,7 @@ dir.fastp = os.path.join(dir.out, "fastp")
 dir.prinseq = os.path.join(dir.out, "prinseq")
 dir.roundAB = os.path.join(dir.out, "roundAB")
 dir.nanopore = os.path.join(dir.out, "nanopore")
+dir.notrim = os.path.join(dir.out, "notrim")
 dir.bench = os.path.join(dir.out, "benchmarks")
 
 
@@ -78,6 +79,7 @@ targets.fastp = []
 targets.prinseq = []
 targets.roundAB = []
 targets.nanopore = []
+targets.notrim = []
 targets.reports = [
     os.path.join(dir.out,"samples.tsv"),
 ]
@@ -88,3 +90,4 @@ for sample_name in samples.names:
     targets.prinseq.append(expand(os.path.join(dir.prinseq, "{file}"), file=samples.reads[sample_name]["targetNames"]))
     targets.roundAB.append(expand(os.path.join(dir.roundAB, "{file}"), file=samples.reads[sample_name]["targetNames"]))
     targets.nanopore.append(expand(os.path.join(dir.nanopore, "{file}"), file=samples.reads[sample_name]["targetNames"]))
+    targets.notrim.append(expand(os.path.join(dir.notrim, "{file}"), file=samples.reads[sample_name]["targetNames"]))

@@ -29,6 +29,7 @@ include: os.path.join("rules", "fastp.smk")
 include: os.path.join("rules", "prinseq.smk")
 include: os.path.join("rules", "roundAB.smk")
 include: os.path.join("rules", "nanopore.smk")
+include: os.path.join("rules", "notrim.smk")
 include: os.path.join("rules", "reports.smk")
 
 
@@ -65,6 +66,13 @@ rule roundAB:
 rule nanopore:
     input:
         targets.nanopore,
+        targets.reports
+
+
+@targetRule
+rule notrim:
+    input:
+        targets.notrim,
         targets.reports
 
 
