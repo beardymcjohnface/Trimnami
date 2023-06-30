@@ -28,7 +28,14 @@ Read trimming methods supported so far:
 ## Install
 
 Trimnami is still in development but can be easily installed with pip:
+ 
+__Easy install__
 
+```shell
+pip install trimnami
+```
+
+__Developer install__
 ```shell
 git clone https://github.com/beardymcjohnface/Trimnami.git
 cd Trimnami/
