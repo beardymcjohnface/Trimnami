@@ -259,13 +259,14 @@ def testnp(**kwargs):
         }
     }
 
+    kwargs["snake_args"] = ["nanopore"]
+
     # run!
     run_snakemake(
         # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
         system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
-        snake_args=["nanopore"],
         **kwargs
     )
 

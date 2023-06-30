@@ -44,6 +44,6 @@ def test_trimnami_cli(tmp_dir):
 
 
 def test_trimnami_commands(tmp_dir):
-    exec_command("trimnami test --threads 1 -n prinseq fastp roundAB nanopore")
+    exec_command("trimnami test --threads 1 -n prinseq fastp roundAB nanopore notrim")
     exec_command("trimnami config")
     exec_command("trimnami citation")
