@@ -39,7 +39,7 @@ rule fastp_paired_end:
             -j {output.stats} \
             -h {output.html} \
             --thread {threads} \
-            --detect_adapter_for_pe {params.fastp} \
+            {params.fastp} \
             2> {log}
         if [[ -s {input.s} ]]
         then
@@ -50,7 +50,7 @@ rule fastp_paired_end:
             -j {output.stats} \
             -h {output.html} \
             --thread {threads} \
-            --detect_adapter_for_pe {params.fastp} \
+            {params.fastp} \
             2> {log}
         else
             touch {output.s}
@@ -90,6 +90,6 @@ rule fastp_single_end:
             -j {output.stats} \
             -h {output.html} \
             --thread {threads} \
-            --detect_adapter_for_pe {params.fastp} \
+            {params.fastp} \
             2> {log}
         """
