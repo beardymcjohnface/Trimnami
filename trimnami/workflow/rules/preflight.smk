@@ -28,6 +28,7 @@ except (KeyError, AssertionError):
 
 dir.temp = os.path.join(dir.out, "temp")
 dir.log = os.path.join(dir.out, "logs")
+dir.reports = os.path.join(dir.out, "reports")
 dir.fastp = os.path.join(dir.out, "fastp")
 dir.prinseq = os.path.join(dir.out, "prinseq")
 dir.roundAB = os.path.join(dir.out, "roundAB")
@@ -62,12 +63,22 @@ targets = ap.AttrMap()
 # generate target base names
 for sample_name in samples.names:
     if samples.reads[sample_name]["R2"] is not None:
-        samples.reads[sample_name]["targetNames"] = expand(
+        samples.reads[sample_name]["trimmed_targets"] = expand(
             sample_name + config.args.hostStr + ".paired" + "{R12}.fastq.gz",
             R12 = [".R1", ".R2", ".S"]
         )
+        samples.reads[sample_name]["fastqc_targets"] = expand(
+            sample_name + config.args.hostStr + ".paired" + "{R12}_fastqc.zip",
+            R12 = [".R1", ".R2", ".S"]
+        )
+        samples.reads[sample_name]["fastqc_untrimmed"] = expand(
+            sample_name + ".paired" + "{R12}_fastqc.zip",
+            R12=[".R1", ".R2"]
+        )
     else:
-        samples.reads[sample_name]["targetNames"] = [sample_name + config.args.hostStr + ".single" + ".fastq.gz"]
+        samples.reads[sample_name]["trimmed_targets"] = [sample_name + config.args.hostStr + ".single.fastq.gz"]
+        samples.reads[sample_name]["fastqc_targets"] = [sample_name + config.args.hostStr + ".single_fastqc.zip"]
+        samples.reads[sample_name]["fastqc_untrimmed"] = [sample_name + ".untrimmed.single_fastqc.zip"]
 
 
 # lock samples from further changes
@@ -80,14 +91,37 @@ targets.prinseq = []
 targets.roundAB = []
 targets.nanopore = []
 targets.notrim = []
+
+targets.fastqc.untrimmed = []
+targets.fastqc.fastp = []
+targets.fastqc.prinseq = []
+targets.fastqc.roundAB = []
+targets.fastqc.nanopore = []
+targets.fastqc.notrim = []
+
 targets.reports = [
     os.path.join(dir.out,"samples.tsv"),
 ]
 
 # populate target lists
 for sample_name in samples.names:
-    targets.fastp.append(expand(os.path.join(dir.fastp, "{file}"), file=samples.reads[sample_name]["targetNames"]))
-    targets.prinseq.append(expand(os.path.join(dir.prinseq, "{file}"), file=samples.reads[sample_name]["targetNames"]))
-    targets.roundAB.append(expand(os.path.join(dir.roundAB, "{file}"), file=samples.reads[sample_name]["targetNames"]))
-    targets.nanopore.append(expand(os.path.join(dir.nanopore, "{file}"), file=samples.reads[sample_name]["targetNames"]))
-    targets.notrim.append(expand(os.path.join(dir.notrim, "{file}"), file=samples.reads[sample_name]["targetNames"]))
+    targets.fastp += expand(os.path.join(dir.fastp, "{file}"), file=samples.reads[sample_name]["trimmed_targets"])
+    targets.prinseq += expand(os.path.join(dir.prinseq, "{file}"), file=samples.reads[sample_name]["trimmed_targets"])
+    targets.roundAB += expand(os.path.join(dir.roundAB, "{file}"), file=samples.reads[sample_name]["trimmed_targets"])
+    targets.nanopore += expand(os.path.join(dir.nanopore, "{file}"), file=samples.reads[sample_name]["trimmed_targets"])
+    targets.notrim += expand(os.path.join(dir.notrim, "{file}"), file=samples.reads[sample_name]["trimmed_targets"])
+
+if config.args.fastqc:
+    for sample_name in samples.names:
+        targets.fastqc.untrimmed += expand(os.path.join(dir.reports,"untrimmed","{file}"), file=samples.reads[sample_name]["fastqc_untrimmed"])
+        targets.fastqc.fastp += expand(os.path.join(dir.reports,"fastp","{file}"), file=samples.reads[sample_name]["fastqc_targets"])
+        targets.fastqc.prinseq += expand(os.path.join(dir.reports,"prinseq","{file}"), file=samples.reads[sample_name]["fastqc_targets"])
+        targets.fastqc.roundAB += expand(os.path.join(dir.reports,"roundAB","{file}"), file=samples.reads[sample_name]["fastqc_targets"])
+        targets.fastqc.nanopore += expand(os.path.join(dir.reports,"nanopore","{file}"), file=samples.reads[sample_name]["fastqc_targets"])
+        targets.fastqc.notrim += expand(os.path.join(dir.reports,"notrim","{file}"), file=samples.reads[sample_name]["fastqc_targets"])
+
+    targets.fastp += [os.path.join(dir.reports, "fastp.fastqc.html"), os.path.join(dir.reports, "untrimmed.fastqc.html")]
+    targets.prinseq += [os.path.join(dir.reports, "prinseq.fastqc.html"), os.path.join(dir.reports, "untrimmed.fastqc.html")]
+    targets.roundAB += [os.path.join(dir.reports, "roundAB.fastqc.html"), os.path.join(dir.reports, "untrimmed.fastqc.html")]
+    targets.nanopore += [os.path.join(dir.reports, "nanopore.fastqc.html"), os.path.join(dir.reports, "untrimmed.fastqc.html")]
+    targets.notrim += [os.path.join(dir.reports, "notrim.fastqc.html"), os.path.join(dir.reports, "untrimmed.fastqc.html")]
