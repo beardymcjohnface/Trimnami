@@ -270,7 +270,7 @@ def testnp(**kwargs):
                 "reads": snake_base(os.path.join("test_data", "nanopore")),
                 "host": snake_base(os.path.join("test_data", "ref.fna")),
                 "output": kwargs["output"],
-                "fastqc": False,
+                "fastqc": kwargs["fastqc"],
                 "minimap": "map-ont",
                 "log": kwargs["log"]
             }
