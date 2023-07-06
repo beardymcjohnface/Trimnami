@@ -1,7 +1,7 @@
-name: trimnami
+name: fastqc
 channels:
-  - conda-forge
   - bioconda
+  - conda-forge
   - defaults
 dependencies:
-  - python>=3.8
+  - fastqc>=0.11.9

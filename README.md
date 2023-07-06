@@ -3,6 +3,7 @@
 [![](https://img.shields.io/static/v1?label=CLI&message=Snaketool&color=blueviolet)](https://github.com/beardymcjohnface/Snaketool)
 [![](https://img.shields.io/static/v1?label=Licence&message=MIT&color=black)](https://opensource.org/license/mit/)
 [![](https://img.shields.io/static/v1?label=Install%20with&message=PIP&color=success)](https://pypi.org/project/trimnami/)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/beardymcjohnface/Trimnami/main)
 [![Unit tests](https://github.com/beardymcjohnface/Trimnami/actions/workflows/python-app.yml/badge.svg)](https://github.com/beardymcjohnface/Trimnami/actions/workflows/python-app.yml)
 [![codecov](https://codecov.io/gh/beardymcjohnface/Trimnami/branch/main/graph/badge.svg?token=E0w8zHLLDq)](https://codecov.io/gh/beardymcjohnface/Trimnami)
 

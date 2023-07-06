@@ -5,7 +5,7 @@ import attrmap.utils as au
 
 configfile: os.path.join(workflow.basedir, '../', 'config', 'config.yaml')
 configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml')
-config = ap.AttrMap(config)
+config = ap.AttrMap(config["trimnami"])
 
 
 def copy_log_file():
@@ -25,6 +25,7 @@ onerror:
 # Import rules
 include: os.path.join("rules", "preflight.smk")
 include: os.path.join("rules", "hostRemoval.smk")
+include: os.path.join("rules", "fastqc.smk")
 include: os.path.join("rules", "fastp.smk")
 include: os.path.join("rules", "prinseq.smk")
 include: os.path.join("rules", "roundAB.smk")

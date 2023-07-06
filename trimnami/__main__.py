@@ -61,6 +61,12 @@ def common_options(func):
             "--threads", help="Number of threads to use", default=8, show_default=True
         ),
         click.option(
+            "--fastqc/--no-fastqc",
+            default=False,
+            help="Run fastqc on trimmed and untrimmed reads",
+            show_default=True,
+        ),
+        click.option(
             "--use-conda/--no-use-conda",
             default=True,
             help="Use conda for Snakemake rules",
@@ -111,8 +117,7 @@ def cli():
 
 
 def print_splash():
-    click.echo("""
-\b
+    click.echo("""\b
 ████████╗██████╗ ██╗███╗   ███╗███╗   ██╗ █████╗ ███╗   ███╗██╗
 ╚══██╔══╝██╔══██╗██║████╗ ████║████╗  ██║██╔══██╗████╗ ████║██║
    ██║   ██████╔╝██║██╔████╔██║██╔██╗ ██║███████║██╔████╔██║██║
@@ -141,6 +146,7 @@ Available targets:
     prinseq         Trim reads with prinseq++
     roundAB         Trim round A/B viral metagenome reads
     nanopore        Trim nanopore reads
+    notrim          Skip read trimming
     print_targets   List available targets
 """
 
@@ -160,12 +166,15 @@ def run(**kwargs):
     """Run Trimnami"""
     # Config to add or update in configfile
     merge_config = {
-        "args": {
-            "reads": kwargs["reads"],
-            "output": kwargs["output"],
-            "host": kwargs["host"],
-            "minimap": kwargs["minimap"],
-            "log": kwargs["log"]
+        "trimnami": {
+            "args": {
+                "reads": kwargs["reads"],
+                "output": kwargs["output"],
+                "host": kwargs["host"],
+                "fastqc": kwargs["fastqc"],
+                "minimap": kwargs["minimap"],
+                "log": kwargs["log"]
+            }
         }
     }
 
@@ -190,12 +199,15 @@ def test(**kwargs):
     """Run Trimnami with the test dataset"""
     # Config to add or update in configfile
     merge_config = {
-        "args": {
-            "reads": snake_base(os.path.join("test_data")),
-            "host": None,
-            "output": kwargs["output"],
-            "minimap": "sr",
-            "log": kwargs["log"]
+        "trimnami": {
+            "args": {
+                "reads": snake_base(os.path.join("test_data")),
+                "host": None,
+                "fastqc": kwargs["fastqc"],
+                "output": kwargs["output"],
+                "minimap": "sr",
+                "log": kwargs["log"]
+            }
         }
     }
 
@@ -220,12 +232,15 @@ def testhost(**kwargs):
     """Run Trimnami with the test dataset and test host"""
     # Config to add or update in configfile
     merge_config = {
-        "args": {
-            "reads": snake_base(os.path.join("test_data")),
-            "host": snake_base(os.path.join("test_data", "ref.fna")),
-            "output": kwargs["output"],
-            "minimap": "sr",
-            "log": kwargs["log"]
+        "trimnami": {
+            "args": {
+                "reads": snake_base(os.path.join("test_data")),
+                "host": snake_base(os.path.join("test_data", "ref.fna")),
+                "output": kwargs["output"],
+                "fastqc": kwargs["fastqc"],
+                "minimap": "sr",
+                "log": kwargs["log"]
+            }
         }
     }
 
@@ -250,12 +265,15 @@ def testnp(**kwargs):
     """Run Trimnami with the test dataset and test host"""
     # Config to add or update in configfile
     merge_config = {
-        "args": {
-            "reads": snake_base(os.path.join("test_data", "nanopore")),
-            "host": snake_base(os.path.join("test_data", "ref.fna")),
-            "output": kwargs["output"],
-            "minimap": "map-ont",
-            "log": kwargs["log"]
+        "trimnami": {
+            "args": {
+                "reads": snake_base(os.path.join("test_data", "nanopore")),
+                "host": snake_base(os.path.join("test_data", "ref.fna")),
+                "output": kwargs["output"],
+                "fastqc": kwargs["fastqc"],
+                "minimap": "map-ont",
+                "log": kwargs["log"]
+            }
         }
     }
 
