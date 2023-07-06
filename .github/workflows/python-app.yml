@@ -26,7 +26,7 @@ permissions:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.python-version }}"
+    name: "Python ${{ matrix.python-version }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
 
     defaults:
@@ -56,6 +56,7 @@ jobs:
 
       - name: "Test and generate coverage report on ${{ matrix.os }} for Python ${{ matrix.python-version }}"
         run: |
+          export AR=/usr/bin/ar
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install pytest coverage
           python -m pip install .
