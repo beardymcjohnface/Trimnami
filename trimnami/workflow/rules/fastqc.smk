@@ -19,10 +19,10 @@ rule fastqc_paired_untrimmed:
     conda:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     log:
         os.path.join(dir.log, "fastqc_paired_untrimmed.{sample}.log")
     benchmark:
@@ -55,10 +55,10 @@ rule fastqc_unpaired_untrimmed:
     conda:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     log:
         os.path.join(dir.log,"fastqc_unpaired_untrimmed.{sample}.log")
     benchmark:
@@ -95,10 +95,10 @@ rule fastqc_paired_trimmed:
     conda:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     log:
         os.path.join(dir.log, "fastqc_paired_trimmed.{sample}.{trimmer}.log")
     benchmark:
@@ -138,10 +138,10 @@ rule fastqc_single_trimmed:
     conda:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     log:
         os.path.join(dir.log,"fastqc_single_trimmed.{sample}.{trimmer}.log")
     benchmark:

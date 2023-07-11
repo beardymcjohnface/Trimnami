@@ -5,6 +5,7 @@ trimnami:
         host:
         minimap:
         fastqc:
+        subsample:
         log:
     qc:
         bbduk:

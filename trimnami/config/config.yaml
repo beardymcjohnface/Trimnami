@@ -1,9 +1,9 @@
+resources:
+    med:
+        mem: 16000
+        cpu: 8
+        time: 240
 trimnami:
-    resources:
-        job:
-            cpu: 8
-            mem: 16000
-            time: 480
     qc:
         compression:
             1

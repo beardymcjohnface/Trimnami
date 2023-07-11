@@ -5,6 +5,7 @@ import attrmap.utils as au
 
 configfile: os.path.join(workflow.basedir, '../', 'config', 'config.yaml')
 configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml')
+resources = ap.AttrMap(config["resources"])
 config = ap.AttrMap(config["trimnami"])
 
 
@@ -31,6 +32,7 @@ include: os.path.join("rules", "prinseq.smk")
 include: os.path.join("rules", "roundAB.smk")
 include: os.path.join("rules", "nanopore.smk")
 include: os.path.join("rules", "notrim.smk")
+include: os.path.join("rules", "rasusa.smk")
 include: os.path.join("rules", "reports.smk")
 
 

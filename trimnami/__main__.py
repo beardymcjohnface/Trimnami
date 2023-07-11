@@ -67,6 +67,12 @@ def common_options(func):
             show_default=True,
         ),
         click.option(
+            "--subsample",
+            default=None,
+            help="Subsample reads to this many bases with rasusa, e.g. 1000, 1m, 1g, 1t",
+            show_default=False,
+        ),
+        click.option(
             "--use-conda/--no-use-conda",
             default=True,
             help="Use conda for Snakemake rules",
@@ -172,6 +178,7 @@ def run(**kwargs):
                 "output": kwargs["output"],
                 "host": kwargs["host"],
                 "fastqc": kwargs["fastqc"],
+                "subsample": kwargs["subsample"],
                 "minimap": kwargs["minimap"],
                 "log": kwargs["log"]
             }
@@ -204,6 +211,7 @@ def test(**kwargs):
                 "reads": snake_base(os.path.join("test_data")),
                 "host": None,
                 "fastqc": kwargs["fastqc"],
+                "subsample": kwargs["subsample"],
                 "output": kwargs["output"],
                 "minimap": "sr",
                 "log": kwargs["log"]
@@ -238,6 +246,7 @@ def testhost(**kwargs):
                 "host": snake_base(os.path.join("test_data", "ref.fna")),
                 "output": kwargs["output"],
                 "fastqc": kwargs["fastqc"],
+                "subsample": kwargs["subsample"],
                 "minimap": "sr",
                 "log": kwargs["log"]
             }
@@ -271,6 +280,7 @@ def testnp(**kwargs):
                 "host": snake_base(os.path.join("test_data", "ref.fna")),
                 "output": kwargs["output"],
                 "fastqc": kwargs["fastqc"],
+                "subsample": kwargs["subsample"],
                 "minimap": "map-ont",
                 "log": kwargs["log"]
             }

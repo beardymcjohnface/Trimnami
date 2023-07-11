@@ -14,11 +14,11 @@ rule remove_5prime_primer:
     log:
         os.path.join(dir.log,"remove_5prime_primer.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.rm_5p
     conda:
@@ -69,11 +69,11 @@ rule remove_3prime_contaminant:
     log:
         os.path.join(dir.log,"remove_3prime_contaminant.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.rm_3rt
     conda:
@@ -124,11 +124,11 @@ rule remove_primer_free_adapter:
     log:
         os.path.join(dir.log,"remove_primer_free_adapter.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.neb
     conda:
@@ -179,11 +179,11 @@ rule remove_adapter_free_primer:
     log:
         os.path.join(dir.log,"remove_adapter_free_primer.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.rm_afp
     conda:
@@ -234,11 +234,11 @@ rule remove_vector_contamination:
     log:
         os.path.join(dir.log,"remove_vector_contamination.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.rm_vc
     conda:
@@ -288,11 +288,11 @@ rule remove_low_quality:
     log:
         os.path.join(dir.log,"remove_low_quality.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.rm_lq
     conda:
@@ -340,11 +340,11 @@ rule zip_roundAB:
     log:
         os.path.join(dir.log,"zip_roundAB.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         compression = config.qc.compression
     conda:
@@ -371,11 +371,11 @@ rule roundAB_single_end:
     log:
         os.path.join(dir.log,"remove_low_quality.{file}.log")
     resources:
-        mem_mb = config.resources.job.mem,
-        javaAlloc = int(0.9 * config.resources.job.mem),
-        time = int(0.5 * config.resources.job.time)
+        mem_mb = resources.med.mem,
+        javaAlloc = int(0.9 * resources.med.mem),
+        time = int(0.5 * resources.med.time)
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     params:
         params = config.qc.bbduk.rm_lq,
         compression = config.qc.compression
