@@ -17,10 +17,10 @@ rule fastp_paired_end:
     log:
         os.path.join(dir.log,"fastp.{file}.log")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"fastp.yaml")
     params:
@@ -72,10 +72,10 @@ rule fastp_single_end:
     log:
         os.path.join(dir.log,"fastp.{file}.log")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"fastp.yaml")
     params:

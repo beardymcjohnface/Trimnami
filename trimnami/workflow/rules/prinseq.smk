@@ -10,10 +10,10 @@ rule prinseq_paired:
         s1=temp(os.path.join(dir.prinseq,"{file}.S1.fastq.gz")),
         s2=temp(os.path.join(dir.prinseq,"{file}.S2.fastq.gz")),
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"prinseq.yaml")
     params:
@@ -56,10 +56,10 @@ rule prinseq_single:
     output:
         r1=os.path.join(dir.prinseq,"{file}.single.fastq.gz"),
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"prinseq.yaml")
     params:

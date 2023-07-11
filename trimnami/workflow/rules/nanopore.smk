@@ -2,12 +2,12 @@ rule filtlong:
     input:
         i=os.path.join(dir.temp,"{file}.single.fastq.gz"),
     output:
-        o=temp(os.path.join(dir.temp,"{file}.fl.single.fastq.gz")),
+        o=os.path.join(dir.nanopore,"{file}.single.fastq.gz"),
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env, "filtlong.yaml")
     params:
@@ -18,28 +18,6 @@ rule filtlong:
         """
             export LC_ALL=en_US.UTF-8
             filtlong {params.params} {input.i} > {output.o} 2> {log}
-        """
-
-
-rule rasusa:
-    input:
-        i=os.path.join(dir.temp,"{file}.fl.single.fastq.gz")
-    output:
-        o=os.path.join(dir.nanopore,"{file}.single.fastq.gz"),
-    resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
-    threads:
-        config.resources.job.cpu
-    conda:
-        os.path.join(dir.env, "rasusa.yaml")
-    params:
-        params=config.qc.nanopore.rasusa
-    log:
-        os.path.join(dir.log, "rasusa_{file}.log")
-    shell:
-        """
-            rasusa -i {input.i} -o {output.o} -O g {params.params} 2> {log}
         """
 
 

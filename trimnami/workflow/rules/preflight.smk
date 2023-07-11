@@ -43,6 +43,7 @@ Define file intermediates
 # Check if host removal
 config.args.hostStr = ""
 config.args.hostIndex = ""
+config.args.subsampleStr = ""
 if config.args.host is not None:
     # String to append to targets to signal host removal
     config.args.hostStr = ".host_rm"
@@ -53,7 +54,8 @@ if config.args.host is not None:
             os.path.basename(config.args.host)
         )[0] + ".idx"
     )
-
+if config.args.subsample is not None:
+    config.args.subsampleStr = ".subsampled"
 
 """
 Define targets
@@ -64,11 +66,11 @@ targets = ap.AttrMap()
 for sample_name in samples.names:
     if samples.reads[sample_name]["R2"] is not None:
         samples.reads[sample_name]["trimmed_targets"] = expand(
-            sample_name + config.args.hostStr + ".paired" + "{R12}.fastq.gz",
+            sample_name + config.args.hostStr + ".paired" + "{R12}" + config.args.subsampleStr + ".fastq.gz",
             R12 = [".R1", ".R2", ".S"]
         )
         samples.reads[sample_name]["fastqc_targets"] = expand(
-            sample_name + config.args.hostStr + ".paired" + "{R12}_fastqc.zip",
+            sample_name + config.args.hostStr + config.args.subsampleStr + ".paired" + "{R12}" + config.args.subsampleStr + "_fastqc.zip",
             R12 = [".R1", ".R2", ".S"]
         )
         samples.reads[sample_name]["fastqc_untrimmed"] = expand(
@@ -76,8 +78,8 @@ for sample_name in samples.names:
             R12=[".R1", ".R2"]
         )
     else:
-        samples.reads[sample_name]["trimmed_targets"] = [sample_name + config.args.hostStr + ".single.fastq.gz"]
-        samples.reads[sample_name]["fastqc_targets"] = [sample_name + config.args.hostStr + ".single_fastqc.zip"]
+        samples.reads[sample_name]["trimmed_targets"] = [sample_name + config.args.hostStr + ".single" + config.args.subsampleStr + ".fastq.gz"]
+        samples.reads[sample_name]["fastqc_targets"] = [sample_name + config.args.hostStr + ".single" + config.args.subsampleStr + "_fastqc.zip"]
         samples.reads[sample_name]["fastqc_untrimmed"] = [sample_name + ".untrimmed.single_fastqc.zip"]
 
 

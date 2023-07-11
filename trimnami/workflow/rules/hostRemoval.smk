@@ -7,10 +7,10 @@ rule index_host_genome:
     params:
         params = config.qc.minimapIndex
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"minimap2.yaml")
     benchmark:
@@ -41,10 +41,10 @@ rule host_removal_mapping_paired:
         sv=os.path.join(dir.log,"host_removal_mapping.{sample}.samtoolsView.log"),
         fq=os.path.join(dir.log,"host_removal_mapping.{sample}.samtoolsFastq.log"),
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"minimap2.yaml")
     shell:
@@ -75,10 +75,10 @@ rule host_removal_mapping_single:
         sv=os.path.join(dir.log,"host_removal_mapping.{sample}.samtoolsView.log"),
         fq=os.path.join(dir.log,"host_removal_mapping.{sample}.samtoolsFastq.log")
     resources:
-        mem_mb=config.resources.job.mem,
-        time=config.resources.job.time
+        mem_mb=resources.med.mem,
+        time=resources.med.time
     threads:
-        config.resources.job.cpu
+        resources.med.cpu
     conda:
         os.path.join(dir.env,"minimap2.yaml")
     shell:
