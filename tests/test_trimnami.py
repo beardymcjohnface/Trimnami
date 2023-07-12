@@ -44,8 +44,17 @@ def test_trimnami_cli(tmp_dir):
 
 
 def test_trimnami_commands(tmp_dir):
-    exec_command("trimnami test --threads 1 --fastqc -n --subsample 1k prinseq fastp roundAB notrim")
-    exec_command("trimnami testhost --threads 1 --fastqc -n --subsample 1k prinseq fastp roundAB notrim")
-    exec_command("trimnami testnp --threads 1 --fastqc -n --subsample 1k")
+    exec_command("trimnami test --threads 1 -n prinseq fastp roundAB notrim nanopore")
+    exec_command("trimnami test --threads 1 -n --fastqc")
+    exec_command("trimnami test --threads 1 -n --subsample 1k")
+    exec_command("trimnami test --threads 1 -n --subsample 1k --fastqc")
+    exec_command("trimnami testhost --threads 1 -n prinseq fastp roundAB notrim nanopore")
+    exec_command("trimnami testhost --threads 1 -n --fastqc")
+    exec_command("trimnami testhost --threads 1 -n --subsample 1k")
+    exec_command("trimnami testhost --threads 1 -n --subsample 1k --fastqc")
+    exec_command("trimnami testnp --threads 1 -n")
+    exec_command("trimnami testnp --threads 1 -n --subsample 1k")
+    exec_command("trimnami testnp --threads 1 -n --fastqc")
+    exec_command("trimnami testnp --threads 1 -n --subsample 1k --fastqc")
     exec_command("trimnami config")
     exec_command("trimnami citation")

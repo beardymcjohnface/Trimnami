@@ -92,6 +92,8 @@ rule fastqc_paired_trimmed:
         z1 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.zip"),
         z2 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.zip"),
         zs = os.path.join(dir.temp,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.zip"),
+    wildcard_constraints:
+        subsampled = ".{0}|\.subsampled"
     conda:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
@@ -135,6 +137,8 @@ rule fastqc_single_trimmed:
     params:
         dir=os.path.join(dir.temp,"{trimmer}"),
         z=os.path.join(dir.temp,"{trimmer}","{sample}.single{subsampled}_fastqc.zip"),
+    wildcard_constraints:
+        subsampled = ".{0}|\.subsampled"
     conda:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
