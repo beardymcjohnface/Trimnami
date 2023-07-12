@@ -70,7 +70,7 @@ for sample_name in samples.names:
             R12 = [".R1", ".R2", ".S"]
         )
         samples.reads[sample_name]["fastqc_targets"] = expand(
-            sample_name + config.args.hostStr + config.args.subsampleStr + ".paired" + "{R12}" + config.args.subsampleStr + "_fastqc.zip",
+            sample_name + config.args.hostStr + ".paired" + "{R12}" + config.args.subsampleStr + "_fastqc.zip",
             R12 = [".R1", ".R2", ".S"]
         )
         samples.reads[sample_name]["fastqc_untrimmed"] = expand(

@@ -17,7 +17,7 @@ rule filtlong:
     shell:
         """
             export LC_ALL=en_US.UTF-8
-            filtlong {params.params} {input.i} > {output.o} 2> {log}
+            filtlong {params.params} {input.i} | gzip -1 > {output.o} 2> {log}
         """
 
 
