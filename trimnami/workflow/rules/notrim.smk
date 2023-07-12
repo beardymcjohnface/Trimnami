@@ -1,3 +1,10 @@
+@target_rule
+rule notrim:
+    input:
+        targets.notrim,
+        targets.reports
+
+
 rule notrim_paired_end:
     """Skip read trimming for paired reads"""
     input:

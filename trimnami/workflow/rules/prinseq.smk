@@ -1,3 +1,10 @@
+@target_rule
+rule prinseq:
+    input:
+        targets.prinseq,
+        targets.reports
+
+
 rule prinseq_paired:
     input:
         r1=os.path.join(dir.temp,"{file}.R1.fastq.gz"),

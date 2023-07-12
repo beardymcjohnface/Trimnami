@@ -1,3 +1,10 @@
+@target_rule
+rule roundAB:
+    input:
+        targets.roundAB,
+        targets.reports
+
+
 rule remove_5prime_primer:
     """Round A/B step 01: Remove 5' primer."""
     input:

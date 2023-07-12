@@ -36,5 +36,3 @@ trimnami:
             filtlong:
                 --min_length 1000
                 --keep_percent 95
-            rasusa:
-                --bases 10000000

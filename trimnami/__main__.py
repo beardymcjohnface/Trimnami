@@ -153,7 +153,7 @@ Available targets:
     roundAB         Trim round A/B viral metagenome reads
     nanopore        Trim nanopore reads
     notrim          Skip read trimming
-    print_targets   List available targets
+    print_trimmers  List available trimming modules
 """
 
 

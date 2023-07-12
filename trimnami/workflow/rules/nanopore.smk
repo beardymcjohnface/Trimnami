@@ -1,3 +1,10 @@
+@target_rule
+rule nanopore:
+    input:
+        targets.nanopore,
+        targets.reports
+
+
 rule filtlong:
     input:
         i=os.path.join(dir.temp,"{file}.single.fastq.gz"),

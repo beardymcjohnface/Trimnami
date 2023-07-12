@@ -1,3 +1,10 @@
+@target_rule
+rule fastp:
+    input:
+        targets.fastp,
+        targets.reports
+
+
 rule fastp_paired_end:
     """Read trimming with fastp for paired reads"""
     input:

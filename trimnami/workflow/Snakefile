@@ -23,64 +23,36 @@ onerror:
     copy_log_file()
 
 
-# Import rules
+"""
+Import non-trimming rules files
+"""
 include: os.path.join("rules", "preflight.smk")
 include: os.path.join("rules", "hostRemoval.smk")
 include: os.path.join("rules", "fastqc.smk")
-include: os.path.join("rules", "fastp.smk")
-include: os.path.join("rules", "prinseq.smk")
-include: os.path.join("rules", "roundAB.smk")
-include: os.path.join("rules", "nanopore.smk")
-include: os.path.join("rules", "notrim.smk")
 include: os.path.join("rules", "rasusa.smk")
 include: os.path.join("rules", "reports.smk")
 
 
-# Mark target rules
-target_rules = []
-def targetRule(fn):
+"""
+Import trimmer modules
+"""
+config.trimming_modules = []
+def target_rule(fn):
     assert fn.__name__.startswith('__')
-    target_rules.append(fn.__name__[2:])
+    config.trimming_modules.append(fn.__name__[2:])
     return fn
 
+for trimmer in config.trimmers:
+    include: os.path.join("rules", trimmer + ".smk")
 
-@targetRule
-rule fastp:
+
+rule default_trimmer:
     input:
         targets.fastp,
         targets.reports
 
 
-@targetRule
-rule prinseq:
-    input:
-        targets.prinseq,
-        targets.reports
-
-
-@targetRule
-rule roundAB:
-    input:
-        targets.roundAB,
-        targets.reports
-
-
-@targetRule
-rule nanopore:
-    input:
-        targets.nanopore,
-        targets.reports
-
-
-@targetRule
-rule notrim:
-    input:
-        targets.notrim,
-        targets.reports
-
-
-@targetRule
-rule print_targets:
+rule print_trimmers:
     run:
-        print("\nTop level rules are: \n", file=sys.stderr)
-        print("* " + "\n* ".join(target_rules) + "\n\n", file=sys.stderr)
+        print("\nAvailable trimming modules are: \n", file=sys.stderr)
+        print("* " + "\n* ".join(config.trimming_modules) + "\n\n", file=sys.stderr)
