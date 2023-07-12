@@ -60,10 +60,15 @@ rule rasusa_paired:
             --bases {params.bases} \
             2> {log}
         
-        rasusa \
-            -i {input.rs} \
-            -o {output.rs} \
-            -O g \
-            --bases {params.bases} \
-            2> {log}
+        if (( $(wc -c {input.rs} | awk '{{print$1}}') > 100 ))
+        then
+            rasusa \
+                -i {input.rs} \
+                -o {output.rs} \
+                -O g \
+                --bases {params.bases} \
+                2> {log}
+        else
+            touch {output.rs}
+        fi
         """

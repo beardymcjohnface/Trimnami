@@ -77,21 +77,21 @@ rule fastqc_unpaired_untrimmed:
 
 rule fastqc_paired_trimmed:
     input:
-        r1 = os.path.join(dir.out, "{trimmer}", "{sample}.paired.R1.fastq.gz"),
-        r2 = os.path.join(dir.out, "{trimmer}", "{sample}.paired.R2.fastq.gz"),
-        rs = os.path.join(dir.out, "{trimmer}", "{sample}.paired.S.fastq.gz"),
+        r1 = os.path.join(dir.out, "{trimmer}", "{sample}.paired.R1{subsampled}.fastq.gz"),
+        r2 = os.path.join(dir.out, "{trimmer}", "{sample}.paired.R2{subsampled}.fastq.gz"),
+        rs = os.path.join(dir.out, "{trimmer}", "{sample}.paired.S{subsampled}.fastq.gz"),
     output:
-        r1 = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1_fastqc.html")),
-        r2 = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2_fastqc.html")),
-        rs = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.S_fastqc.html")),
-        z1 = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.R1_fastqc.zip")),
-        z2 = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.R2_fastqc.zip")),
-        zs = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.S_fastqc.zip")),
+        r1 = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.html")),
+        r2 = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.html")),
+        rs = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.html")),
+        z1 = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.zip")),
+        z2 = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.zip")),
+        zs = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.zip")),
     params:
         dir = os.path.join(dir.temp,"{trimmer}"),
-        z1 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1_fastqc.zip"),
-        z2 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2_fastqc.zip"),
-        zs = os.path.join(dir.temp,"{trimmer}","{sample}.paired.S_fastqc.zip"),
+        z1 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.zip"),
+        z2 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.zip"),
+        zs = os.path.join(dir.temp,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.zip"),
     conda:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
@@ -100,9 +100,9 @@ rule fastqc_paired_trimmed:
     threads:
         resources.med.cpu
     log:
-        os.path.join(dir.log, "fastqc_paired_trimmed.{sample}.{trimmer}.log")
+        os.path.join(dir.log, "fastqc_paired_trimmed.{sample}.{trimmer}{subsampled}.log")
     benchmark:
-        os.path.join(dir.bench,"fastqc_paired_trimmed.{sample}.{trimmer}.txt")
+        os.path.join(dir.bench,"fastqc_paired_trimmed.{sample}.{trimmer}{subsampled}.txt")
     shell:
         """
         fastqc {input.r1} {input.r2} \
@@ -128,13 +128,13 @@ rule fastqc_paired_trimmed:
 
 rule fastqc_single_trimmed:
     input:
-        os.path.join(dir.out,"{trimmer}","{sample}.single.fastq.gz"),
+        os.path.join(dir.out,"{trimmer}","{sample}.single{subsampled}.fastq.gz"),
     output:
-        r=temp(os.path.join(dir.temp,"{trimmer}","{sample}.single_fastqc.html")),
-        z=temp(os.path.join(dir.reports,"{trimmer}","{sample}.single_fastqc.zip")),
+        r=temp(os.path.join(dir.temp,"{trimmer}","{sample}.single{subsampled}_fastqc.html")),
+        z=temp(os.path.join(dir.reports,"{trimmer}","{sample}.single{subsampled}_fastqc.zip")),
     params:
         dir=os.path.join(dir.temp,"{trimmer}"),
-        z=os.path.join(dir.temp,"{trimmer}","{sample}.single_fastqc.zip"),
+        z=os.path.join(dir.temp,"{trimmer}","{sample}.single{subsampled}_fastqc.zip"),
     conda:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
@@ -143,9 +143,9 @@ rule fastqc_single_trimmed:
     threads:
         resources.med.cpu
     log:
-        os.path.join(dir.log,"fastqc_single_trimmed.{sample}.{trimmer}.log")
+        os.path.join(dir.log,"fastqc_single_trimmed.{sample}.{trimmer}{subsampled}.log")
     benchmark:
-        os.path.join(dir.bench,"fastqc_single_trimmed.{sample}.{trimmer}.txt")
+        os.path.join(dir.bench,"fastqc_single_trimmed.{sample}.{trimmer}{subsampled}.txt")
     shell:
         """
         fastqc {input} \
