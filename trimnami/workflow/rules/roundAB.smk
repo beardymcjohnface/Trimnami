@@ -22,6 +22,7 @@ rule remove_5prime_primer:
         os.path.join(dir.log,"remove_5prime_primer.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -77,6 +78,7 @@ rule remove_3prime_contaminant:
         os.path.join(dir.log,"remove_3prime_contaminant.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -132,6 +134,7 @@ rule remove_primer_free_adapter:
         os.path.join(dir.log,"remove_primer_free_adapter.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -187,6 +190,7 @@ rule remove_adapter_free_primer:
         os.path.join(dir.log,"remove_adapter_free_primer.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -242,6 +246,7 @@ rule remove_vector_contamination:
         os.path.join(dir.log,"remove_vector_contamination.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -296,6 +301,7 @@ rule remove_low_quality:
         os.path.join(dir.log,"remove_low_quality.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -348,6 +354,7 @@ rule zip_roundAB:
         os.path.join(dir.log,"zip_roundAB.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:
@@ -379,6 +386,7 @@ rule roundAB_single_end:
         os.path.join(dir.log,"remove_low_quality.{file}.log")
     resources:
         mem_mb = resources.med.mem,
+        mem = resources.med.mem + "MB",
         javaAlloc = int(0.9 * resources.med.mem),
         time = int(0.5 * resources.med.time)
     threads:

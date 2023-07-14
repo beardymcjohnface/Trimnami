@@ -25,6 +25,7 @@ rule fastp_paired_end:
         os.path.join(dir.log,"fastp.{file}.log")
     resources:
         mem_mb=resources.med.mem,
+        mem=resources.med.mem + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -80,6 +81,7 @@ rule fastp_single_end:
         os.path.join(dir.log,"fastp.{file}.log")
     resources:
         mem_mb=resources.med.mem,
+        mem=resources.med.mem + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu

@@ -12,6 +12,7 @@ rule filtlong:
         o=os.path.join(dir.nanopore,"{file}.single.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
+        mem=resources.med.mem + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
