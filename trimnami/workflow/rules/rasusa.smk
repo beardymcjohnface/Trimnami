@@ -5,7 +5,7 @@ rule rasusa_single:
         o=os.path.join(dir.out, "{dir}", "{file}.single.subsampled.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -39,7 +39,7 @@ rule rasusa_paired:
         rs=os.path.join(dir.out, "{dir}", "{file}.paired.S.subsampled.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu

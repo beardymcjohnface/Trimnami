@@ -20,7 +20,7 @@ rule fastqc_paired_untrimmed:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -57,7 +57,7 @@ rule fastqc_unpaired_untrimmed:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -100,7 +100,7 @@ rule fastqc_paired_trimmed:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -146,7 +146,7 @@ rule fastqc_single_trimmed:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu

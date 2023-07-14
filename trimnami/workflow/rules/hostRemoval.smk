@@ -8,7 +8,7 @@ rule index_host_genome:
         params = config.qc.minimapIndex
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -43,7 +43,7 @@ rule host_removal_mapping_paired:
         fq=os.path.join(dir.log,"host_removal_mapping.{sample}.samtoolsFastq.log"),
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -78,7 +78,7 @@ rule host_removal_mapping_single:
         fq=os.path.join(dir.log,"host_removal_mapping.{sample}.samtoolsFastq.log")
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu

@@ -18,7 +18,7 @@ rule prinseq_paired:
         s2=temp(os.path.join(dir.prinseq,"{file}.S2.fastq.gz")),
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
@@ -65,7 +65,7 @@ rule prinseq_single:
         r1=os.path.join(dir.prinseq,"{file}.single.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
-        mem=resources.med.mem + "MB",
+        mem=str(resources.med.mem) + "MB",
         time=resources.med.time
     threads:
         resources.med.cpu
