@@ -7,9 +7,9 @@ rule nanopore:
 
 rule filtlong:
     input:
-        i=os.path.join(dir.temp,"{file}.single.fastq.gz"),
+        i=os.path.join(dir.temp,"{sample}_single{host}.fastq.gz"),
     output:
-        o=os.path.join(dir.nanopore,"{file}.single.fastq.gz"),
+        o=os.path.join(dir.nanopore,"{sample}_single{host}.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
         mem=str(resources.med.mem) + "MB",
@@ -20,8 +20,10 @@ rule filtlong:
         os.path.join(dir.env, "filtlong.yaml")
     params:
         params=config.qc.nanopore.filtlong
+    benchmark:
+        os.path.join(dir.bench,"filtlong_{sample}{host}.txt")
     log:
-        os.path.join(dir.log, "filtlong_{file}.log")
+        os.path.join(dir.log, "filtlong_{sample}{host}.log")
     shell:
         """
             export LC_ALL=en_US.UTF-8
@@ -32,18 +34,18 @@ rule filtlong:
 rule nanopore_paired:
     """This rule should never be run"""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.fastq.gz"),
-        r2=os.path.join(dir.temp,"{file}.R2.fastq.gz"),
-        s=os.path.join(dir.temp,"{file}.S.fastq.gz"),
+        r1=os.path.join(dir.temp,"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir.temp,"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir.temp,"{sample}_S{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.nanopore,"{file}.R1.fastq.gz"),
-        r2=os.path.join(dir.nanopore,"{file}.R2.fastq.gz"),
-        s=os.path.join(dir.nanopore,"{file}.S.fastq.gz"),
+        r1=os.path.join(dir.nanopore,"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir.nanopore,"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir.nanopore,"{sample}_S{host}.fastq.gz"),
     localrule:
         True
     shell:
         """
-        cp {input.r1} {output.r1}
-        cp {input.r2} {output.r2}
-        cp {input.s} {output.s}
+        ln {input.r1} {output.r1}
+        ln {input.r2} {output.r2}
+        ln {input.s} {output.s}
         """

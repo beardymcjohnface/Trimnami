@@ -65,21 +65,21 @@ if config.args.subsample is not None:
 for sample_name in samples.names:
     if samples.reads[sample_name]["R2"] is not None:
         samples.reads[sample_name]["trimmed_targets"] = expand(
-            sample_name + config.args.hostStr + ".paired" + "{R12}" + config.args.subsampleStr + ".fastq.gz",
-            R12 = [".R1", ".R2", ".S"]
+            sample_name + "{R12}" + config.args.hostStr + config.args.subsampleStr + ".fastq.gz",
+            R12 = ["_R1", "_R2", "_S"]
         )
         samples.reads[sample_name]["fastqc_targets"] = expand(
-            sample_name + config.args.hostStr + ".paired" + "{R12}" + config.args.subsampleStr + "_fastqc.zip",
-            R12 = [".R1", ".R2", ".S"]
+            sample_name + "{R12}" + config.args.hostStr + config.args.subsampleStr + "_fastqc.zip",
+            R12 = ["_R1", "_R2", "_S"]
         )
         samples.reads[sample_name]["fastqc_untrimmed"] = expand(
-            sample_name + ".paired" + "{R12}_fastqc.zip",
-            R12=[".R1", ".R2"]
+            sample_name + "{R12}_fastqc.zip",
+            R12=["_R1", "_R2"]
         )
     else:
-        samples.reads[sample_name]["trimmed_targets"] = [sample_name + config.args.hostStr + ".single" + config.args.subsampleStr + ".fastq.gz"]
-        samples.reads[sample_name]["fastqc_targets"] = [sample_name + config.args.hostStr + ".single" + config.args.subsampleStr + "_fastqc.zip"]
-        samples.reads[sample_name]["fastqc_untrimmed"] = [sample_name + ".untrimmed.single_fastqc.zip"]
+        samples.reads[sample_name]["trimmed_targets"] = [sample_name + "_single" + config.args.hostStr  + config.args.subsampleStr + ".fastq.gz"]
+        samples.reads[sample_name]["fastqc_targets"] = [sample_name + "_single" + config.args.hostStr + config.args.subsampleStr + "_fastqc.zip"]
+        samples.reads[sample_name]["fastqc_untrimmed"] = [sample_name + ".untrimmed_single_fastqc.zip"]
 
 
 # lock samples from further changes
@@ -119,7 +119,7 @@ for trimmer in config.trimmers:
 
 
 """
-Other targets
+Reports
 """
 targets.reports = [
     os.path.join(dir.out,"samples.tsv"),

@@ -29,10 +29,10 @@ rule host_removal_mapping_paired:
         r2=lambda wildcards: samples.reads[wildcards.sample]["R2"],
         host=lambda wildcards: config.args.hostIndex if config.args.host else ""
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.host_rm.paired.R1.fastq.gz")),
-        r2=temp(os.path.join(dir.temp,"{sample}.host_rm.paired.R2.fastq.gz")),
-        s=temp(os.path.join(dir.temp,"{sample}.host_rm.paired.S.fastq.gz")),
-        o=temp(os.path.join(dir.temp,"{sample}.host_rm.paired.O.fastq.gz")),
+        r1=temp(os.path.join(dir.temp,"{sample}_R1.host_rm.fastq.gz")),
+        r2=temp(os.path.join(dir.temp,"{sample}_R2.host_rm.fastq.gz")),
+        s=temp(os.path.join(dir.temp,"{sample}_S.host_rm.fastq.gz")),
+        o=temp(os.path.join(dir.temp,"{sample}_0.host_rm.fastq.gz")),
     params:
         compression=config.qc.compression
     benchmark:
@@ -64,9 +64,9 @@ rule host_removal_mapping_single:
         r1=lambda wildcards: samples.reads[wildcards.sample]["R1"],
         host=lambda wildcards: config.args.hostIndex if config.args.host else ""
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.host_rm.single.fastq.gz")),
-        s=temp(os.path.join(dir.temp,"{sample}.host_rm.single.S.fastq.gz")),
-        o=temp(os.path.join(dir.temp,"{sample}.host_rm.single.O.fastq.gz")),
+        r1=temp(os.path.join(dir.temp,"{sample}_single.host_rm.fastq.gz")),
+        s=temp(os.path.join(dir.temp,"{sample}_single.host_rm.S.fastq.gz")),
+        o=temp(os.path.join(dir.temp,"{sample}_single.host_rm.O.fastq.gz")),
     params:
         compression=config.qc.compression,
         minimap_mode=config.args.minimap
@@ -99,9 +99,9 @@ rule skip_host_rm_paired:
         r1 = lambda wildcards: samples.reads[wildcards.sample]["R1"],
         r2 = lambda wildcards: samples.reads[wildcards.sample]["R2"],
     output:
-        r1 = temp(os.path.join(dir.temp,"{sample}.paired.R1.fastq.gz")),
-        r2 = temp(os.path.join(dir.temp,"{sample}.paired.R2.fastq.gz")),
-        s = temp(os.path.join(dir.temp,"{sample}.paired.S.fastq.gz")),
+        r1 = temp(os.path.join(dir.temp,"{sample}_R1.fastq.gz")),
+        r2 = temp(os.path.join(dir.temp,"{sample}_R2.fastq.gz")),
+        s = temp(os.path.join(dir.temp,"{sample}_S.fastq.gz")),
     params:
         is_paired = True
     localrule:
@@ -118,7 +118,7 @@ rule skip_host_rm_single:
     input:
         r1 = lambda wildcards: samples.reads[wildcards.sample]["R1"],
     output:
-        r1 = temp(os.path.join(dir.temp,"{sample}.single.fastq.gz")),
+        r1 = temp(os.path.join(dir.temp,"{sample}_single.fastq.gz")),
     params:
         is_paired = False
     localrule:

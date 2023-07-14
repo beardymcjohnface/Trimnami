@@ -1,8 +1,8 @@
 rule rasusa_single:
     input:
-        i=os.path.join(dir.out, "{dir}", "{file}.single.fastq.gz")
+        i=os.path.join(dir.out, "{dir}", "{sample}_single{host}.fastq.gz")
     output:
-        o=os.path.join(dir.out, "{dir}", "{file}.single.subsampled.fastq.gz"),
+        o=os.path.join(dir.out, "{dir}", "{sample}_single{host}.subsampled.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
         mem=str(resources.med.mem) + "MB",
@@ -14,9 +14,9 @@ rule rasusa_single:
     params:
         bases=lambda wildcards: config.args.subsample if config.args.subsample else ""
     benchmark:
-        os.path.join(dir.bench, "rasusa_single.{dir}.{file}.txt")
+        os.path.join(dir.bench, "rasusa_single.{dir}.{sample}{host}.txt")
     log:
-        os.path.join(dir.log, "rasusa_single.{dir}.{file}.log")
+        os.path.join(dir.log, "rasusa_single.{dir}.{sample}{host}.log")
     shell:
         """
             rasusa \
@@ -30,13 +30,13 @@ rule rasusa_single:
 
 rule rasusa_paired:
     input:
-        r1=os.path.join(dir.out, "{dir}", "{file}.paired.R1.fastq.gz"),
-        r2=os.path.join(dir.out, "{dir}", "{file}.paired.R2.fastq.gz"),
-        rs=os.path.join(dir.out, "{dir}", "{file}.paired.S.fastq.gz"),
+        r1=os.path.join(dir.out, "{dir}", "{sample}_R1.fastq.gz"),
+        r2=os.path.join(dir.out, "{dir}", "{sample}_R2.fastq.gz"),
+        rs=os.path.join(dir.out, "{dir}", "{sample}_S.fastq.gz"),
     output:
-        r1=os.path.join(dir.out, "{dir}", "{file}.paired.R1.subsampled.fastq.gz"),
-        r2=os.path.join(dir.out, "{dir}", "{file}.paired.R2.subsampled.fastq.gz"),
-        rs=os.path.join(dir.out, "{dir}", "{file}.paired.S.subsampled.fastq.gz"),
+        r1=os.path.join(dir.out, "{dir}", "{sample}_R1{host}.subsampled.fastq.gz"),
+        r2=os.path.join(dir.out, "{dir}", "{sample}_R2{host}.subsampled.fastq.gz"),
+        rs=os.path.join(dir.out, "{dir}", "{sample}_S{host}.subsampled.fastq.gz"),
     resources:
         mem_mb=resources.med.mem,
         mem=str(resources.med.mem) + "MB",
@@ -48,9 +48,9 @@ rule rasusa_paired:
     params:
         bases=lambda wildcards: config.args.subsample if config.args.subsample else ""
     benchmark:
-        os.path.join(dir.bench, "rasusa_paired.{dir}.{file}.txt")
+        os.path.join(dir.bench, "rasusa_paired.{dir}.{sample}{host}.txt")
     log:
-        os.path.join(dir.log, "rasusa_paired.{dir}.{file}.log")
+        os.path.join(dir.log, "rasusa_paired.{dir}.{sample}{host}.log")
     shell:
         """
         rasusa \

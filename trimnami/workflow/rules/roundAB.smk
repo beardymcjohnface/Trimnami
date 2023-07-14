@@ -8,18 +8,18 @@ rule roundAB:
 rule remove_5prime_primer:
     """Round A/B step 01: Remove 5' primer."""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.fastq.gz"),
-        r2=os.path.join(dir.temp,"{file}.R2.fastq.gz"),
-        s=os.path.join(dir.temp,"{file}.S.fastq.gz"),
+        r1=os.path.join(dir.temp,"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir.temp,"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir.temp,"{sample}_S{host}.fastq.gz"),
         primers=os.path.join(dir.db,"primerB.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{file}.R1.s1.fastq")),
-        r2=temp(os.path.join(dir.temp,"{file}.R2.s1.fastq")),
-        s=temp(os.path.join(dir.temp,"{file}.S.s1.fastq")),
+        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s1.fastq")),
+        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s1.fastq")),
+        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s1.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_5prime_primer.{file}.txt")
+        os.path.join(dir.bench,"remove_5prime_primer.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_5prime_primer.{file}.log")
+        os.path.join(dir.log,"remove_5prime_primer.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -64,18 +64,18 @@ rule remove_5prime_primer:
 rule remove_3prime_contaminant:
     """Round A/B step 02: Remove 3' read through contaminant."""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.s1.fastq"),
-        r2=os.path.join(dir.temp,"{file}.R2.s1.fastq"),
-        s=os.path.join(dir.temp,"{file}.S.s1.fastq"),
+        r1=os.path.join(dir.temp,"{sample}.R1{host}.s1.fastq"),
+        r2=os.path.join(dir.temp,"{sample}.R2{host}.s1.fastq"),
+        s=os.path.join(dir.temp,"{sample}.S{host}.s1.fastq"),
         primers=os.path.join(dir.db,"rc_primerB_ad6.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{file}.R1.s2.fastq")),
-        r2=temp(os.path.join(dir.temp,"{file}.R2.s2.fastq")),
-        s=temp(os.path.join(dir.temp,"{file}.S.s2.fastq")),
+        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s2.fastq")),
+        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s2.fastq")),
+        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s2.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_3prime_contaminant.{file}.txt")
+        os.path.join(dir.bench,"remove_3prime_contaminant.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_3prime_contaminant.{file}.log")
+        os.path.join(dir.log,"remove_3prime_contaminant.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -120,18 +120,18 @@ rule remove_3prime_contaminant:
 rule remove_primer_free_adapter:
     """Round A/B step 03: Remove primer free adapter (both orientations)."""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.s2.fastq"),
-        r2=os.path.join(dir.temp,"{file}.R2.s2.fastq"),
-        s=os.path.join(dir.temp,"{file}.S.s2.fastq"),
+        r1=os.path.join(dir.temp,"{sample}.R1{host}.s2.fastq"),
+        r2=os.path.join(dir.temp,"{sample}.R2{host}.s2.fastq"),
+        s=os.path.join(dir.temp,"{sample}.S{host}.s2.fastq"),
         primers=os.path.join(dir.db,"nebnext_adapters.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{file}.R1.s3.fastq")),
-        r2=temp(os.path.join(dir.temp,"{file}.R2.s3.fastq")),
-        s=temp(os.path.join(dir.temp,"{file}.S.s3.fastq")),
+        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s3.fastq")),
+        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s3.fastq")),
+        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s3.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_primer_free_adapter.{file}.txt")
+        os.path.join(dir.bench,"remove_primer_free_adapter.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_primer_free_adapter.{file}.log")
+        os.path.join(dir.log,"remove_primer_free_adapter.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -176,18 +176,18 @@ rule remove_primer_free_adapter:
 rule remove_adapter_free_primer:
     """Round A/B step 04: Remove adapter free primer (both orientations)."""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.s3.fastq"),
-        r2=os.path.join(dir.temp,"{file}.R2.s3.fastq"),
-        s=os.path.join(dir.temp,"{file}.S.s3.fastq"),
+        r1=os.path.join(dir.temp,"{sample}.R1{host}.s3.fastq"),
+        r2=os.path.join(dir.temp,"{sample}.R2{host}.s3.fastq"),
+        s=os.path.join(dir.temp,"{sample}.S{host}.s3.fastq"),
         primers=os.path.join(dir.db,"rc_primerB_ad6.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{file}.R1.s4.fastq")),
-        r2=temp(os.path.join(dir.temp,"{file}.R2.s4.fastq")),
-        s=temp(os.path.join(dir.temp,"{file}.S.s4.fastq")),
+        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s4.fastq")),
+        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s4.fastq")),
+        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s4.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_adapter_free_primer.{file}.txt")
+        os.path.join(dir.bench,"remove_adapter_free_primer.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_adapter_free_primer.{file}.log")
+        os.path.join(dir.log,"remove_adapter_free_primer.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -232,18 +232,18 @@ rule remove_adapter_free_primer:
 rule remove_vector_contamination:
     """Round A/B step 05: Vector contamination removal (PhiX + NCBI UniVecDB)"""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.s4.fastq"),
-        r2=os.path.join(dir.temp,"{file}.R2.s4.fastq"),
-        s=os.path.join(dir.temp,"{file}.S.s4.fastq"),
+        r1=os.path.join(dir.temp,"{sample}.R1{host}.s4.fastq"),
+        r2=os.path.join(dir.temp,"{sample}.R2{host}.s4.fastq"),
+        s=os.path.join(dir.temp,"{sample}.S{host}.s4.fastq"),
         primers=os.path.join(dir.db,"vector_contaminants.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{file}.R1.s5.fastq")),
-        r2=temp(os.path.join(dir.temp,"{file}.R2.s5.fastq")),
-        s=temp(os.path.join(dir.temp,"{file}.S.s5.fastq")),
+        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s5.fastq")),
+        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s5.fastq")),
+        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s5.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_vector_contamination.{file}.txt")
+        os.path.join(dir.bench,"remove_vector_contamination.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_vector_contamination.{file}.log")
+        os.path.join(dir.log,"remove_vector_contamination.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -288,17 +288,17 @@ rule remove_vector_contamination:
 rule remove_low_quality:
     """Round A/B step 06: Remove remaining low-quality bases and short reads."""
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.s5.fastq"),
-        r2=os.path.join(dir.temp,"{file}.R2.s5.fastq"),
-        s=os.path.join(dir.temp,"{file}.S.s5.fastq"),
+        r1=os.path.join(dir.temp,"{sample}.R1{host}.s5.fastq"),
+        r2=os.path.join(dir.temp,"{sample}.R2{host}.s5.fastq"),
+        s=os.path.join(dir.temp,"{sample}.S{host}.s5.fastq"),
     output:
-        r1=temp(os.path.join(dir.temp,"{file}.R1.s6.fastq")),
-        r2=temp(os.path.join(dir.temp,"{file}.R2.s6.fastq")),
-        s=temp(os.path.join(dir.temp,"{file}.S.s6.fastq")),
+        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s6.fastq")),
+        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s6.fastq")),
+        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s6.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_low_quality.{file}.txt")
+        os.path.join(dir.bench,"remove_low_quality.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_low_quality.{file}.log")
+        os.path.join(dir.log,"remove_low_quality.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -341,17 +341,17 @@ rule remove_low_quality:
 rule zip_roundAB:
     """Zip the final trimmed reads for Round A/B"""
     input:
-        r1 = os.path.join(dir.temp,"{file}.R1.s6.fastq"),
-        r2 = os.path.join(dir.temp,"{file}.R2.s6.fastq"),
-        s = os.path.join(dir.temp,"{file}.S.s6.fastq"),
+        r1=os.path.join(dir.temp,"{sample}.R1{host}.s6.fastq"),
+        r2=os.path.join(dir.temp,"{sample}.R2{host}.s6.fastq"),
+        s=os.path.join(dir.temp,"{sample}.S{host}.s6.fastq"),
     output:
-        r1 = os.path.join(dir.roundAB,"{file}.R1.fastq.gz"),
-        r2 = os.path.join(dir.roundAB,"{file}.R2.fastq.gz"),
-        s = os.path.join(dir.roundAB,"{file}.S.fastq.gz")
+        r1=os.path.join(dir.roundAB,"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir.roundAB,"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir.roundAB,"{sample}_S{host}.fastq.gz"),
     benchmark:
-        os.path.join(dir.bench,"zip_roundAB.{file}.txt")
+        os.path.join(dir.bench,"zip_roundAB.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"zip_roundAB.{file}.log")
+        os.path.join(dir.log,"zip_roundAB.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",
@@ -376,14 +376,14 @@ rule zip_roundAB:
 rule roundAB_single_end:
     """Round A/B for single end: This should not occur but this rule is here for testing purposes."""
     input:
-        r1=os.path.join(dir.temp,"{file}.single.fastq.gz"),
+        r1=os.path.join(dir.temp,"{sample}_single{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.roundAB,"{file}.single.fastq.gz"),
-        tmp=temp(os.path.join(dir.roundAB,"{file}.single.fastq")),
+        r1=os.path.join(dir.roundAB,"{sample}_single{host}.fastq.gz"),
+        tmp=temp(os.path.join(dir.temp,"{sample}_single{host}.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_low_quality.{file}.txt")
+        os.path.join(dir.bench,"remove_low_quality.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_low_quality.{file}.log")
+        os.path.join(dir.log,"remove_low_quality.{sample}{host}.log")
     resources:
         mem_mb = resources.med.mem,
         mem = str(resources.med.mem) + "MB",

@@ -3,8 +3,8 @@ rule fastqc_paired_untrimmed:
         r1 = lambda wildcards: samples.reads[wildcards.sample]["R1"],
         r2 = lambda wildcards: samples.reads[wildcards.sample]["R2"],
     output:
-        z1 = temp(os.path.join(dir.reports,"untrimmed","{sample}.paired.R1_fastqc.zip")),
-        z2 = temp(os.path.join(dir.reports,"untrimmed","{sample}.paired.R2_fastqc.zip")),
+        z1 = temp(os.path.join(dir.reports,"untrimmed","{sample}_R1_fastqc.zip")),
+        z2 = temp(os.path.join(dir.reports,"untrimmed","{sample}_R2_fastqc.zip")),
         t=touch(temp(os.path.join(dir.temp,"{sample}.untrimmed.fastqc")))
     params:
         dir = dir.temp,
@@ -45,7 +45,7 @@ rule fastqc_unpaired_untrimmed:
     input:
         r1=lambda wildcards: samples.reads[wildcards.sample]["R1"],
     output:
-        z1=temp(os.path.join(dir.reports,"untrimmed","{sample}.untrimmed.single_fastqc.zip")),
+        z1=temp(os.path.join(dir.reports,"untrimmed","{sample}.untrimmed_single_fastqc.zip")),
         t=touch(temp(os.path.join(dir.temp,"{sample}.untrimmed.fastqc")))
     params:
         dir=dir.temp,
@@ -79,23 +79,21 @@ rule fastqc_unpaired_untrimmed:
 
 rule fastqc_paired_trimmed:
     input:
-        r1 = os.path.join(dir.out, "{trimmer}", "{sample}.paired.R1{subsampled}.fastq.gz"),
-        r2 = os.path.join(dir.out, "{trimmer}", "{sample}.paired.R2{subsampled}.fastq.gz"),
-        rs = os.path.join(dir.out, "{trimmer}", "{sample}.paired.S{subsampled}.fastq.gz"),
+        r1 = os.path.join(dir.out, "{trimmer}", "{sample}_R1{host}{subsampled}.fastq.gz"),
+        r2 = os.path.join(dir.out, "{trimmer}", "{sample}_R2{host}{subsampled}.fastq.gz"),
+        rs = os.path.join(dir.out, "{trimmer}", "{sample}_S{host}{subsampled}.fastq.gz"),
     output:
-        r1 = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.html")),
-        r2 = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.html")),
-        rs = temp(os.path.join(dir.temp,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.html")),
-        z1 = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.zip")),
-        z2 = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.zip")),
-        zs = temp(os.path.join(dir.reports,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.zip")),
+        r1 = temp(os.path.join(dir.temp,"{trimmer}","{sample}_R1{host}{subsampled}_fastqc.html")),
+        r2 = temp(os.path.join(dir.temp,"{trimmer}","{sample}_R2{host}{subsampled}_fastqc.html")),
+        rs = temp(os.path.join(dir.temp,"{trimmer}","{sample}_S{host}{subsampled}_fastqc.html")),
+        z1 = temp(os.path.join(dir.reports,"{trimmer}","{sample}_R1{host}{subsampled}_fastqc.zip")),
+        z2 = temp(os.path.join(dir.reports,"{trimmer}","{sample}_R2{host}{subsampled}_fastqc.zip")),
+        zs = temp(os.path.join(dir.reports,"{trimmer}","{sample}_S{host}{subsampled}_fastqc.zip")),
     params:
         dir = os.path.join(dir.temp,"{trimmer}"),
-        z1 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R1{subsampled}_fastqc.zip"),
-        z2 = os.path.join(dir.temp,"{trimmer}","{sample}.paired.R2{subsampled}_fastqc.zip"),
-        zs = os.path.join(dir.temp,"{trimmer}","{sample}.paired.S{subsampled}_fastqc.zip"),
-    wildcard_constraints:
-        subsampled = ".{0}|\.subsampled"
+        z1 = os.path.join(dir.temp,"{trimmer}","{sample}_R1{host}{subsampled}_fastqc.zip"),
+        z2 = os.path.join(dir.temp,"{trimmer}","{sample}_R2{host}{subsampled}_fastqc.zip"),
+        zs = os.path.join(dir.temp,"{trimmer}","{sample}_S{host}{subsampled}_fastqc.zip"),
     conda:
         os.path.join(dir.env, "fastqc.yaml")
     resources:
@@ -105,9 +103,9 @@ rule fastqc_paired_trimmed:
     threads:
         resources.med.cpu
     log:
-        os.path.join(dir.log, "fastqc_paired_trimmed.{sample}.{trimmer}{subsampled}.log")
+        os.path.join(dir.log, "fastqc_paired_trimmed.{sample}.{trimmer}{host}{subsampled}.log")
     benchmark:
-        os.path.join(dir.bench,"fastqc_paired_trimmed.{sample}.{trimmer}{subsampled}.txt")
+        os.path.join(dir.bench,"fastqc_paired_trimmed.{sample}.{trimmer}{host}{subsampled}.txt")
     shell:
         """
         fastqc {input.r1} {input.r2} \
@@ -133,15 +131,13 @@ rule fastqc_paired_trimmed:
 
 rule fastqc_single_trimmed:
     input:
-        os.path.join(dir.out,"{trimmer}","{sample}.single{subsampled}.fastq.gz"),
+        os.path.join(dir.out,"{trimmer}","{sample}_single{host}{subsampled}.fastq.gz"),
     output:
-        r=temp(os.path.join(dir.temp,"{trimmer}","{sample}.single{subsampled}_fastqc.html")),
-        z=temp(os.path.join(dir.reports,"{trimmer}","{sample}.single{subsampled}_fastqc.zip")),
+        r=temp(os.path.join(dir.temp,"{trimmer}","{sample}_single{host}{subsampled}_fastqc.html")),
+        z=temp(os.path.join(dir.reports,"{trimmer}","{sample}_single{host}{subsampled}_fastqc.zip")),
     params:
         dir=os.path.join(dir.temp,"{trimmer}"),
-        z=os.path.join(dir.temp,"{trimmer}","{sample}.single{subsampled}_fastqc.zip"),
-    wildcard_constraints:
-        subsampled = ".{0}|\.subsampled"
+        z=os.path.join(dir.temp,"{trimmer}","{sample}_single{host}{subsampled}_fastqc.zip"),
     conda:
         os.path.join(dir.env,"fastqc.yaml")
     resources:
@@ -151,9 +147,9 @@ rule fastqc_single_trimmed:
     threads:
         resources.med.cpu
     log:
-        os.path.join(dir.log,"fastqc_single_trimmed.{sample}.{trimmer}{subsampled}.log")
+        os.path.join(dir.log,"fastqc_single_trimmed.{sample}.{trimmer}{host}{subsampled}.log")
     benchmark:
-        os.path.join(dir.bench,"fastqc_single_trimmed.{sample}.{trimmer}{subsampled}.txt")
+        os.path.join(dir.bench,"fastqc_single_trimmed.{sample}.{trimmer}{host}{subsampled}.txt")
     shell:
         """
         fastqc {input} \
