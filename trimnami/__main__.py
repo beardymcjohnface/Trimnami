@@ -166,7 +166,7 @@ Available targets:
 @click.option("--reads", help="Input file/directory", type=str, required=True)
 @click.option('--host', help='Host genome fasta for filtering', show_default=False, required=False)
 @click.option("--minimap", help="Minimap preset", default="sr", show_default=True,
-              type=click.Choice(["map-pb", "map-ont", "map-hifi", "sr"]))
+              type=click.Choice(["sr", "map-pb", "map-ont", "map-hifi"]))
 @common_options
 def run(**kwargs):
     """Run Trimnami"""

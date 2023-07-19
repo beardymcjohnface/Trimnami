@@ -34,7 +34,9 @@ rule host_removal_mapping_paired:
         s=temp(os.path.join(dir.temp,"{sample}_S.host_rm.fastq.gz")),
         o=temp(os.path.join(dir.temp,"{sample}_0.host_rm.fastq.gz")),
     params:
-        compression=config.qc.compression
+        compression=config.qc.compression,
+        minimap_mode=config.args.minimap,
+        flagFilt=config.qc.hostRemoveFlagstat
     benchmark:
         os.path.join(dir.bench,"host_removal_mapping.{sample}.txt")
     log:
@@ -51,9 +53,9 @@ rule host_removal_mapping_paired:
         os.path.join(dir.env,"minimap2.yaml")
     shell:
         """
-        minimap2 -ax sr -t {threads} --secondary=no {input.host} {input.r1} {input.r2} 2> {log.mm} \
-            | samtools view -f 4 -h 2> {log.sv} \
-            | samtools fastq -NO -c {params.compression} -1 {output.r1} -2 {output.r2} -0 {output.o} -s {output.s} 2> {log.fq}
+        minimap2 -ax {params.minimap_mode} -t {threads} --secondary=no {input.host} {input.r1} {input.r2} 2> {log.mm} \
+            | samtools view -h {params.flagFilt} 2> {log.sv} \
+            | samtools fastq -N -O -c {params.compression} -1 {output.r1} -2 {output.r2} -0 {output.o} -s {output.s} 2> {log.fq}
         cat {output.o} >> {output.s}
         """
 
@@ -69,7 +71,8 @@ rule host_removal_mapping_single:
         o=temp(os.path.join(dir.temp,"{sample}_single.host_rm.O.fastq.gz")),
     params:
         compression=config.qc.compression,
-        minimap_mode=config.args.minimap
+        minimap_mode=config.args.minimap,
+        flagFilt=config.qc.hostRemoveFlagstat
     benchmark:
         os.path.join(dir.bench,"host_removal_mapping.{sample}.txt")
     log:
@@ -87,8 +90,8 @@ rule host_removal_mapping_single:
     shell:
         """
         minimap2 -ax {params.minimap_mode} -t {threads} --secondary=no {input.host} {input.r1} 2> {log.mm} \
-            | samtools view -f 4 -h 2> {log.sv} \
-            | samtools fastq -nO -c {params.compression} -o {output.r1} -0 {output.o} -s {output.s} 2> {log.fq}
+            | samtools view -h {params.flagFilt} 2> {log.sv} \
+            | samtools fastq -n -O -c {params.compression} -o {output.r1} -0 {output.o} -s {output.s} 2> {log.fq}
         cat {output.o} {output.s} >> {output.r1}
         """
 
