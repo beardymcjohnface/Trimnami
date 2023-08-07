@@ -1,29 +1,29 @@
 @target_rule
 rule nanopore:
     input:
-        targets.nanopore,
-        targets.reports
+        targets["nanopore"],
+        targets["reports"]
 
 
 rule filtlong:
     input:
-        i=os.path.join(dir.temp,"{sample}_single{host}.fastq.gz"),
+        i=os.path.join(dir["temp"],"{sample}_single{host}.fastq.gz"),
     output:
-        o=os.path.join(dir.nanopore,"{sample}_single{host}.fastq.gz"),
+        o=os.path.join(dir["nanopore"],"{sample}_single{host}.fastq.gz"),
     resources:
-        mem_mb=resources.med.mem,
-        mem=str(resources.med.mem) + "MB",
-        time=resources.med.time
+        mem_mb=resources["med"]["mem"],
+        mem=str(resources["med"]["mem"]) + "MB",
+        time=resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     conda:
-        os.path.join(dir.env, "filtlong.yaml")
+        os.path.join(dir["env"], "filtlong.yaml")
     params:
-        params=config.qc.nanopore.filtlong
+        params=config["qc"]["nanopore"]["filtlong"]
     benchmark:
-        os.path.join(dir.bench,"filtlong_{sample}{host}.txt")
+        os.path.join(dir["bench"],"filtlong_{sample}{host}.txt")
     log:
-        os.path.join(dir.log, "filtlong_{sample}{host}.log")
+        os.path.join(dir["log"], "filtlong_{sample}{host}.log")
     shell:
         """
             export LC_ALL=en_US.UTF-8
@@ -34,13 +34,13 @@ rule filtlong:
 rule nanopore_paired:
     """This rule should never be run"""
     input:
-        r1=os.path.join(dir.temp,"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir.temp,"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir.temp,"{sample}_S{host}.fastq.gz"),
+        r1=os.path.join(dir["temp"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["temp"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["temp"],"{sample}_S{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.nanopore,"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir.nanopore,"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir.nanopore,"{sample}_S{host}.fastq.gz"),
+        r1=os.path.join(dir["nanopore"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["nanopore"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["nanopore"],"{sample}_S{host}.fastq.gz"),
     localrule:
         True
     shell:

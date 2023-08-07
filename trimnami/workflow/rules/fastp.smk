@@ -1,39 +1,39 @@
 @target_rule
 rule fastp:
     input:
-        targets.fastp,
-        targets.reports
+        targets["fastp"],
+        targets["reports"]
 
 
 rule fastp_paired_end:
     """Read trimming with fastp for paired reads"""
     input:
-        r1=os.path.join(dir.temp,"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir.temp,"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir.temp,"{sample}_S{host}.fastq.gz"),
+        r1=os.path.join(dir["temp"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["temp"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["temp"],"{sample}_S{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.fastp,"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir.fastp,"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir.fastp,"{sample}_S{host}.fastq.gz"),
-        s1=temp(os.path.join(dir.fastp,"{sample}_S1{host}.fastq.gz")),
-        s2=temp(os.path.join(dir.fastp,"{sample}_S2{host}.fastq.gz")),
-        stats=temp(os.path.join(dir.fastp,"{sample}{host}.stats.json")),
-        html=temp(os.path.join(dir.fastp,"{sample}{host}.stats.html"))
+        r1=os.path.join(dir["fastp"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["fastp"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["fastp"],"{sample}_S{host}.fastq.gz"),
+        s1=temp(os.path.join(dir["fastp"],"{sample}_S1{host}.fastq.gz")),
+        s2=temp(os.path.join(dir["fastp"],"{sample}_S2{host}.fastq.gz")),
+        stats=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.json")),
+        html=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.html"))
     benchmark:
-        os.path.join(dir.bench,"fastp.{sample}{host}.txt")
+        os.path.join(dir["bench"],"fastp.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"fastp.{sample}{host}.log")
+        os.path.join(dir["log"],"fastp.{sample}{host}.log")
     resources:
-        mem_mb=resources.med.mem,
-        mem=str(resources.med.mem) + "MB",
-        time=resources.med.time
+        mem_mb=resources["med"]["mem"],
+        mem=str(resources["med"]["mem"]) + "MB",
+        time=resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     conda:
-        os.path.join(dir.env,"fastp.yaml")
+        os.path.join(dir["env"],"fastp.yaml")
     params:
-        fastp=config.fastp,
-        compression=config.qc.compression
+        fastp=config["qc"]["fastp"],
+        compression=config["qc"]["compression"]
     shell:
         """
         fastp \
@@ -70,26 +70,26 @@ rule fastp_paired_end:
 rule fastp_single_end:
     """Read trimming with fastp for single end reads"""
     input:
-        r1=os.path.join(dir.temp,"{sample}_single{host}.fastq.gz"),
+        r1=os.path.join(dir["temp"],"{sample}_single{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.fastp,"{sample}_single{host}.fastq.gz"),
-        stats=temp(os.path.join(dir.fastp,"{sample}{host}.stats.json")),
-        html=temp(os.path.join(dir.fastp,"{sample}{host}.stats.html"))
+        r1=os.path.join(dir["fastp"],"{sample}_single{host}.fastq.gz"),
+        stats=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.json")),
+        html=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.html"))
     benchmark:
-        os.path.join(dir.bench,"fastp.{sample}{host}.txt")
+        os.path.join(dir["bench"],"fastp.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"fastp.{sample}{host}.log")
+        os.path.join(dir["log"],"fastp.{sample}{host}.log")
     resources:
-        mem_mb=resources.med.mem,
-        mem=str(resources.med.mem) + "MB",
-        time=resources.med.time
+        mem_mb=resources["med"]["mem"],
+        mem=str(resources["med"]["mem"]) + "MB",
+        time=resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     conda:
-        os.path.join(dir.env,"fastp.yaml")
+        os.path.join(dir["env"],"fastp.yaml")
     params:
-        fastp=config.fastp,
-        compression=config.qc.compression
+        fastp=config["qc"]["fastp"],
+        compression=config["qc"]["compression"]
     shell:
         """
         fastp \

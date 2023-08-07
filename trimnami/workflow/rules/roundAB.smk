@@ -1,36 +1,36 @@
 @target_rule
 rule roundAB:
     input:
-        targets.roundAB,
-        targets.reports
+        targets["roundAB"],
+        targets["reports"]
 
 
 rule remove_5prime_primer:
     """Round A/B step 01: Remove 5' primer."""
     input:
-        r1=os.path.join(dir.temp,"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir.temp,"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir.temp,"{sample}_S{host}.fastq.gz"),
-        primers=os.path.join(dir.db,"primerB.fa")
+        r1=os.path.join(dir["temp"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["temp"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["temp"],"{sample}_S{host}.fastq.gz"),
+        primers=os.path.join(dir["db"],"primerB.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s1.fastq")),
-        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s1.fastq")),
-        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s1.fastq")),
+        r1=temp(os.path.join(dir["temp"],"{sample}.R1{host}.s1.fastq")),
+        r2=temp(os.path.join(dir["temp"],"{sample}.R2{host}.s1.fastq")),
+        s=temp(os.path.join(dir["temp"],"{sample}.S{host}.s1.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_5prime_primer.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_5prime_primer.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_5prime_primer.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_5prime_primer.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
-        time = resources.med.time
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
+        time = resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.rm_5p
+        params = config["qc"]["bbduk"]["rm_5p"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:
@@ -64,29 +64,29 @@ rule remove_5prime_primer:
 rule remove_3prime_contaminant:
     """Round A/B step 02: Remove 3' read through contaminant."""
     input:
-        r1=os.path.join(dir.temp,"{sample}.R1{host}.s1.fastq"),
-        r2=os.path.join(dir.temp,"{sample}.R2{host}.s1.fastq"),
-        s=os.path.join(dir.temp,"{sample}.S{host}.s1.fastq"),
-        primers=os.path.join(dir.db,"rc_primerB_ad6.fa")
+        r1=os.path.join(dir["temp"],"{sample}.R1{host}.s1.fastq"),
+        r2=os.path.join(dir["temp"],"{sample}.R2{host}.s1.fastq"),
+        s=os.path.join(dir["temp"],"{sample}.S{host}.s1.fastq"),
+        primers=os.path.join(dir["db"],"rc_primerB_ad6.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s2.fastq")),
-        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s2.fastq")),
-        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s2.fastq")),
+        r1=temp(os.path.join(dir["temp"],"{sample}.R1{host}.s2.fastq")),
+        r2=temp(os.path.join(dir["temp"],"{sample}.R2{host}.s2.fastq")),
+        s=temp(os.path.join(dir["temp"],"{sample}.S{host}.s2.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_3prime_contaminant.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_3prime_contaminant.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_3prime_contaminant.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_3prime_contaminant.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
         time = "00:00:01"
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.rm_3rt
+        params = config["qc"]["bbduk"]["rm_3rt"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:
@@ -120,29 +120,29 @@ rule remove_3prime_contaminant:
 rule remove_primer_free_adapter:
     """Round A/B step 03: Remove primer free adapter (both orientations)."""
     input:
-        r1=os.path.join(dir.temp,"{sample}.R1{host}.s2.fastq"),
-        r2=os.path.join(dir.temp,"{sample}.R2{host}.s2.fastq"),
-        s=os.path.join(dir.temp,"{sample}.S{host}.s2.fastq"),
-        primers=os.path.join(dir.db,"nebnext_adapters.fa")
+        r1=os.path.join(dir["temp"],"{sample}.R1{host}.s2.fastq"),
+        r2=os.path.join(dir["temp"],"{sample}.R2{host}.s2.fastq"),
+        s=os.path.join(dir["temp"],"{sample}.S{host}.s2.fastq"),
+        primers=os.path.join(dir["db"],"nebnext_adapters.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s3.fastq")),
-        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s3.fastq")),
-        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s3.fastq")),
+        r1=temp(os.path.join(dir["temp"],"{sample}.R1{host}.s3.fastq")),
+        r2=temp(os.path.join(dir["temp"],"{sample}.R2{host}.s3.fastq")),
+        s=temp(os.path.join(dir["temp"],"{sample}.S{host}.s3.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_primer_free_adapter.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_primer_free_adapter.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_primer_free_adapter.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_primer_free_adapter.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
         time = "00:00:01"
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.neb
+        params = config["qc"]["bbduk"]["neb"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:
@@ -176,29 +176,29 @@ rule remove_primer_free_adapter:
 rule remove_adapter_free_primer:
     """Round A/B step 04: Remove adapter free primer (both orientations)."""
     input:
-        r1=os.path.join(dir.temp,"{sample}.R1{host}.s3.fastq"),
-        r2=os.path.join(dir.temp,"{sample}.R2{host}.s3.fastq"),
-        s=os.path.join(dir.temp,"{sample}.S{host}.s3.fastq"),
-        primers=os.path.join(dir.db,"rc_primerB_ad6.fa")
+        r1=os.path.join(dir["temp"],"{sample}.R1{host}.s3.fastq"),
+        r2=os.path.join(dir["temp"],"{sample}.R2{host}.s3.fastq"),
+        s=os.path.join(dir["temp"],"{sample}.S{host}.s3.fastq"),
+        primers=os.path.join(dir["db"],"rc_primerB_ad6.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s4.fastq")),
-        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s4.fastq")),
-        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s4.fastq")),
+        r1=temp(os.path.join(dir["temp"],"{sample}.R1{host}.s4.fastq")),
+        r2=temp(os.path.join(dir["temp"],"{sample}.R2{host}.s4.fastq")),
+        s=temp(os.path.join(dir["temp"],"{sample}.S{host}.s4.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_adapter_free_primer.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_adapter_free_primer.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_adapter_free_primer.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_adapter_free_primer.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
         time = "00:00:01"
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.rm_afp
+        params = config["qc"]["bbduk"]["rm_afp"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:
@@ -232,29 +232,29 @@ rule remove_adapter_free_primer:
 rule remove_vector_contamination:
     """Round A/B step 05: Vector contamination removal (PhiX + NCBI UniVecDB)"""
     input:
-        r1=os.path.join(dir.temp,"{sample}.R1{host}.s4.fastq"),
-        r2=os.path.join(dir.temp,"{sample}.R2{host}.s4.fastq"),
-        s=os.path.join(dir.temp,"{sample}.S{host}.s4.fastq"),
-        primers=os.path.join(dir.db,"vector_contaminants.fa")
+        r1=os.path.join(dir["temp"],"{sample}.R1{host}.s4.fastq"),
+        r2=os.path.join(dir["temp"],"{sample}.R2{host}.s4.fastq"),
+        s=os.path.join(dir["temp"],"{sample}.S{host}.s4.fastq"),
+        primers=os.path.join(dir["db"],"vector_contaminants.fa")
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s5.fastq")),
-        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s5.fastq")),
-        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s5.fastq")),
+        r1=temp(os.path.join(dir["temp"],"{sample}.R1{host}.s5.fastq")),
+        r2=temp(os.path.join(dir["temp"],"{sample}.R2{host}.s5.fastq")),
+        s=temp(os.path.join(dir["temp"],"{sample}.S{host}.s5.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_vector_contamination.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_vector_contamination.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_vector_contamination.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_vector_contamination.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
         time = "00:00:01"
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.rm_vc
+        params = config["qc"]["bbduk"]["rm_vc"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:
@@ -288,28 +288,28 @@ rule remove_vector_contamination:
 rule remove_low_quality:
     """Round A/B step 06: Remove remaining low-quality bases and short reads."""
     input:
-        r1=os.path.join(dir.temp,"{sample}.R1{host}.s5.fastq"),
-        r2=os.path.join(dir.temp,"{sample}.R2{host}.s5.fastq"),
-        s=os.path.join(dir.temp,"{sample}.S{host}.s5.fastq"),
+        r1=os.path.join(dir["temp"],"{sample}.R1{host}.s5.fastq"),
+        r2=os.path.join(dir["temp"],"{sample}.R2{host}.s5.fastq"),
+        s=os.path.join(dir["temp"],"{sample}.S{host}.s5.fastq"),
     output:
-        r1=temp(os.path.join(dir.temp,"{sample}.R1{host}.s6.fastq")),
-        r2=temp(os.path.join(dir.temp,"{sample}.R2{host}.s6.fastq")),
-        s=temp(os.path.join(dir.temp,"{sample}.S{host}.s6.fastq")),
+        r1=temp(os.path.join(dir["temp"],"{sample}.R1{host}.s6.fastq")),
+        r2=temp(os.path.join(dir["temp"],"{sample}.R2{host}.s6.fastq")),
+        s=temp(os.path.join(dir["temp"],"{sample}.S{host}.s6.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_low_quality.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_low_quality.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_low_quality.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_low_quality.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
         time = "00:00:01"
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.rm_lq
+        params = config["qc"]["bbduk"]["rm_lq"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:
@@ -341,28 +341,28 @@ rule remove_low_quality:
 rule zip_roundAB:
     """Zip the final trimmed reads for Round A/B"""
     input:
-        r1=os.path.join(dir.temp,"{sample}.R1{host}.s6.fastq"),
-        r2=os.path.join(dir.temp,"{sample}.R2{host}.s6.fastq"),
-        s=os.path.join(dir.temp,"{sample}.S{host}.s6.fastq"),
+        r1=os.path.join(dir["temp"],"{sample}.R1{host}.s6.fastq"),
+        r2=os.path.join(dir["temp"],"{sample}.R2{host}.s6.fastq"),
+        s=os.path.join(dir["temp"],"{sample}.S{host}.s6.fastq"),
     output:
-        r1=os.path.join(dir.roundAB,"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir.roundAB,"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir.roundAB,"{sample}_S{host}.fastq.gz"),
+        r1=os.path.join(dir["roundAB"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["roundAB"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["roundAB"],"{sample}_S{host}.fastq.gz"),
     benchmark:
-        os.path.join(dir.bench,"zip_roundAB.{sample}{host}.txt")
+        os.path.join(dir["bench"],"zip_roundAB.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"zip_roundAB.{sample}{host}.log")
+        os.path.join(dir["log"],"zip_roundAB.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
         time = "00:00:01"
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        compression = config.qc.compression
+        compression = config["qc"]["compression"]
     conda:
-        os.path.join(dir.env, "pigz.yaml")
+        os.path.join(dir["env"], "pigz.yaml")
     group:
         "roundAB"
     shell:
@@ -376,26 +376,26 @@ rule zip_roundAB:
 rule roundAB_single_end:
     """Round A/B for single end: This should not occur but this rule is here for testing purposes."""
     input:
-        r1=os.path.join(dir.temp,"{sample}_single{host}.fastq.gz"),
+        r1=os.path.join(dir["temp"],"{sample}_single{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.roundAB,"{sample}_single{host}.fastq.gz"),
-        tmp=temp(os.path.join(dir.temp,"{sample}_single{host}.fastq")),
+        r1=os.path.join(dir["roundAB"],"{sample}_single{host}.fastq.gz"),
+        tmp=temp(os.path.join(dir["temp"],"{sample}_single{host}.fastq")),
     benchmark:
-        os.path.join(dir.bench,"remove_low_quality.{sample}{host}.txt")
+        os.path.join(dir["bench"],"remove_low_quality.{sample}{host}.txt")
     log:
-        os.path.join(dir.log,"remove_low_quality.{sample}{host}.log")
+        os.path.join(dir["log"],"remove_low_quality.{sample}{host}.log")
     resources:
-        mem_mb = resources.med.mem,
-        mem = str(resources.med.mem) + "MB",
-        javaAlloc = int(0.9 * resources.med.mem),
-        time = resources.med.time
+        mem_mb = resources["med"]["mem"],
+        mem = str(resources["med"]["mem"]) + "MB",
+        javaAlloc = int(0.9 * resources["med"]["mem"]),
+        time = resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     params:
-        params = config.qc.bbduk.rm_lq,
-        compression = config.qc.compression
+        params = config["qc"]["bbduk"]["rm_lq"],
+        compression = config["qc"]["compression"]
     conda:
-        os.path.join(dir.env, "bbmap.yaml")
+        os.path.join(dir["env"], "bbmap.yaml")
     group:
         "roundAB"
     shell:

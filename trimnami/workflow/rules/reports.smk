@@ -2,9 +2,9 @@
 rule sample_manifest:
     """Print the parsed sample manifest"""
     output:
-        tsv = os.path.join(dir.out,"samples.tsv")
+        tsv = os.path.join(dir["out"],"samples.tsv")
     params:
-        sample_dict = samples.reads
+        sample_dict = samples["reads"]
     localrule:
         True
     run:

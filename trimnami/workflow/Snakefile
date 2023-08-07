@@ -1,12 +1,10 @@
 import glob
-import attrmap as ap
-import attrmap.utils as au
 
 
 configfile: os.path.join(workflow.basedir, '../', 'config', 'config.yaml')
 configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml')
-resources = ap.AttrMap(config["resources"])
-config = ap.AttrMap(config["trimnami"])
+resources = config["resources"]
+config = config["trimnami"]
 
 
 def copy_log_file():
@@ -14,7 +12,7 @@ def copy_log_file():
     files = glob.glob(os.path.join(".snakemake", "log", "*.snakemake.log"))
     if files:
         current_log = max(files, key=os.path.getmtime)
-        shell("cat " + current_log + " >> " + config.args['log'])
+        shell("cat " + current_log + " >> " + config["args"]["log"])
 
 onsuccess:
     copy_log_file()
@@ -25,7 +23,8 @@ onerror:
 
 wildcard_constraints:
     host = ".{0}|\.host_rm",
-    subsample = ".{0}|\.subsampled"
+    subsample = ".{0}|\.subsampled",
+    hostSubsampled = ".{0}|\.host_rm\.subsampled"
 
 
 """
@@ -39,25 +38,25 @@ include: os.path.join("rules", "reports.smk")
 
 
 """
-Import trimmer modules
+Trimmer modules and rules files
 """
-config.trimming_modules = []
+config["trimming_modules"] = []
 def target_rule(fn):
     assert fn.__name__.startswith('__')
-    config.trimming_modules.append(fn.__name__[2:])
+    config["trimming_modules"].append(fn.__name__[2:])
     return fn
 
-for trimmer in config.trimmers:
+for trimmer in config["trimmers"]:
     include: os.path.join("rules", trimmer + ".smk")
 
 
 rule default_trimmer:
     input:
-        targets.fastp,
-        targets.reports
+        targets["fastp"],
+        targets["reports"]
 
 
 rule print_trimmers:
     run:
         print("\nAvailable trimming modules are: \n", file=sys.stderr)
-        print("* " + "\n* ".join(config.trimming_modules) + "\n\n", file=sys.stderr)
+        print("* " + "\n* ".join(config["trimming_modules"]) + "\n\n", file=sys.stderr)
