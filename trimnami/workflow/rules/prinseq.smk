@@ -1,27 +1,35 @@
+@target_rule
+rule prinseq:
+    input:
+        targets["prinseq"],
+        targets["reports"]
+
+
 rule prinseq_paired:
     input:
-        r1=os.path.join(dir.temp,"{file}.R1.fastq.gz"),
-        r2=os.path.join(dir.temp,"{file}.R2.fastq.gz"),
-        s=os.path.join(dir.temp,"{file}.S.fastq.gz"),
+        r1=os.path.join(dir["temp"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["temp"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["temp"],"{sample}_S{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.prinseq,"{file}.R1.fastq.gz"),
-        r2=os.path.join(dir.prinseq,"{file}.R2.fastq.gz"),
-        s=os.path.join(dir.prinseq,"{file}.S.fastq.gz"),
-        s1=temp(os.path.join(dir.prinseq,"{file}.S1.fastq.gz")),
-        s2=temp(os.path.join(dir.prinseq,"{file}.S2.fastq.gz")),
+        r1=os.path.join(dir["prinseq"],"{sample}_R1{host}.fastq.gz"),
+        r2=os.path.join(dir["prinseq"],"{sample}_R2{host}.fastq.gz"),
+        s=os.path.join(dir["prinseq"],"{sample}_S{host}.fastq.gz"),
+        s1=temp(os.path.join(dir["prinseq"],"{sample}_S1{host}.fastq.gz")),
+        s2=temp(os.path.join(dir["prinseq"],"{sample}_S2{host}.fastq.gz")),
     resources:
-        mem_mb=resources.med.mem,
-        time=resources.med.time
+        mem_mb=resources["med"]["mem"],
+        mem=str(resources["med"]["mem"]) + "MB",
+        time=resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     conda:
-        os.path.join(dir.env,"prinseq.yaml")
+        os.path.join(dir["env"],"prinseq.yaml")
     params:
-        params = config.qc.prinseq
+        params = config["qc"]["prinseq"]
     log:
-        os.path.join(dir.log, "prinseq.{file}.log")
+        os.path.join(dir["log"], "prinseq.{sample}{host}.log")
     benchmark:
-        os.path.join(dir.bench,"prinseq.{file}.txt")
+        os.path.join(dir["bench"],"prinseq.{sample}{host}.txt")
     shell:
         """
         prinseq++ {params.params} \
@@ -52,22 +60,23 @@ rule prinseq_paired:
 
 rule prinseq_single:
     input:
-        r1=os.path.join(dir.temp,"{file}.single.fastq.gz"),
+        r1=os.path.join(dir["temp"],"{sample}_single{host}.fastq.gz"),
     output:
-        r1=os.path.join(dir.prinseq,"{file}.single.fastq.gz"),
+        r1=os.path.join(dir["prinseq"],"{sample}_single{host}.fastq.gz"),
     resources:
-        mem_mb=resources.med.mem,
-        time=resources.med.time
+        mem_mb=resources["med"]["mem"],
+        mem=str(resources["med"]["mem"]) + "MB",
+        time=resources["med"]["time"]
     threads:
-        resources.med.cpu
+        resources["med"]["cpu"]
     conda:
-        os.path.join(dir.env,"prinseq.yaml")
+        os.path.join(dir["env"],"prinseq.yaml")
     params:
-        params = config.qc.prinseq
+        params = config["qc"]["prinseq"]
     log:
-        os.path.join(dir.log, "prinseq.{file}.log")
+        os.path.join(dir["log"], "prinseq.{sample}{host}.log")
     benchmark:
-        os.path.join(dir.bench,"prinseq.{file}.txt")
+        os.path.join(dir["bench"],"prinseq.{sample}{host}.txt")
     shell:
         """
         prinseq++ {params.params} \

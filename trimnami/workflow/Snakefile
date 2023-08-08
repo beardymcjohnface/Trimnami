@@ -1,12 +1,10 @@
 import glob
-import attrmap as ap
-import attrmap.utils as au
 
 
 configfile: os.path.join(workflow.basedir, '../', 'config', 'config.yaml')
 configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml')
-resources = ap.AttrMap(config["resources"])
-config = ap.AttrMap(config["trimnami"])
+resources = config["resources"]
+config = config["trimnami"]
 
 
 def copy_log_file():
@@ -14,7 +12,7 @@ def copy_log_file():
     files = glob.glob(os.path.join(".snakemake", "log", "*.snakemake.log"))
     if files:
         current_log = max(files, key=os.path.getmtime)
-        shell("cat " + current_log + " >> " + config.args['log'])
+        shell("cat " + current_log + " >> " + config["args"]["log"])
 
 onsuccess:
     copy_log_file()
@@ -23,64 +21,42 @@ onerror:
     copy_log_file()
 
 
-# Import rules
+wildcard_constraints:
+    host = ".{0}|\.host_rm",
+    subsample = ".{0}|\.subsampled",
+    hostSubsampled = ".{0}|.+"
+
+
+"""
+Import non-trimming rules files
+"""
 include: os.path.join("rules", "preflight.smk")
 include: os.path.join("rules", "hostRemoval.smk")
 include: os.path.join("rules", "fastqc.smk")
-include: os.path.join("rules", "fastp.smk")
-include: os.path.join("rules", "prinseq.smk")
-include: os.path.join("rules", "roundAB.smk")
-include: os.path.join("rules", "nanopore.smk")
-include: os.path.join("rules", "notrim.smk")
 include: os.path.join("rules", "rasusa.smk")
 include: os.path.join("rules", "reports.smk")
 
 
-# Mark target rules
-target_rules = []
-def targetRule(fn):
+"""
+Trimmer modules and rules files
+"""
+config["trimming_modules"] = []
+def target_rule(fn):
     assert fn.__name__.startswith('__')
-    target_rules.append(fn.__name__[2:])
+    config["trimming_modules"].append(fn.__name__[2:])
     return fn
 
+for trimmer in config["trimmers"]:
+    include: os.path.join("rules", trimmer + ".smk")
 
-@targetRule
-rule fastp:
+
+rule default_trimmer:
     input:
-        targets.fastp,
-        targets.reports
+        targets["fastp"],
+        targets["reports"]
 
 
-@targetRule
-rule prinseq:
-    input:
-        targets.prinseq,
-        targets.reports
-
-
-@targetRule
-rule roundAB:
-    input:
-        targets.roundAB,
-        targets.reports
-
-
-@targetRule
-rule nanopore:
-    input:
-        targets.nanopore,
-        targets.reports
-
-
-@targetRule
-rule notrim:
-    input:
-        targets.notrim,
-        targets.reports
-
-
-@targetRule
-rule print_targets:
+rule print_trimmers:
     run:
-        print("\nTop level rules are: \n", file=sys.stderr)
-        print("* " + "\n* ".join(target_rules) + "\n\n", file=sys.stderr)
+        print("\nAvailable trimming modules are: \n", file=sys.stderr)
+        print("* " + "\n* ".join(config["trimming_modules"]) + "\n\n", file=sys.stderr)

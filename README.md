@@ -124,64 +124,78 @@ e.g. if trimming with Fastp or Prinseq++,
 trimmed reads will be in `trimnami.out/fastp/` or `trimnami.out/prinseq/`.
 Paired reads will yield three files: 
 The R1 and R2 paired reads, and any singletons from trimming or host removal.
+Subsampling will produce extra files of subsampled trimmed reads.
+Multiqc-fastqc reports for any runs will be available in `trimnami.out/reports/`
 
-
+### Example outputs
 <details>
-    <summary><b>If you run all the tests you should get this</b></summary>
+    <summary>Click to expand</summary>
+
+prinseq
 
 ```text
 trimnami.out/
-├── fastp
-│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
-│   ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
-│   └── A13-135-177-06_AGTTCC.single.fastq.gz
-├── nanopore
-│   ├── SRR7947171.host_rm.single.fastq.gz
-│   └── SRR7947176.host_rm.single.fastq.gz
-├── prinseq
-│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
-│   ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
-│   ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
-│   ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
-│   └── A13-135-177-06_AGTTCC.single.fastq.gz
-└── roundAB
-    ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
-    ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
-    ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
+└── prinseq
     ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
     ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
     ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
-    ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
-    ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
-    ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
     ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
     ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
     ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
-    ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
     └── A13-135-177-06_AGTTCC.single.fastq.gz
+```
+
+prinseq with fastqc reports
+
+```text
+trimnami.out/
+├── prinseq
+│   ├── A13-04-182-06_TAGCTT.paired.R1.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.R2.fastq.gz
+│   ├── A13-04-182-06_TAGCTT.paired.S.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.R1.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.R2.fastq.gz
+│   ├── A13-12-250-06_GGCTAC.paired.S.fastq.gz
+│   └── A13-135-177-06_AGTTCC.single.fastq.gz
+└── reports
+    ├── prinseq.fastqc.html
+    └── untrimmed.fastqc.html
 
 ```
 
-</details>
+prinseq with host removal
 
+```text
+trimnami.out/
+└── prinseq
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
+    └── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
+```
+
+prinseq with host removal and subsampling
+
+```text
+trimnami.out/
+└── prinseq
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R1.subsampled.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.R2.subsampled.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.S.fastq.gz
+    ├── A13-04-182-06_TAGCTT.host_rm.paired.S.subsampled.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R1.subsampled.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.R2.subsampled.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.S.fastq.gz
+    ├── A13-12-250-06_GGCTAC.host_rm.paired.S.subsampled.fastq.gz
+    ├── A13-135-177-06_AGTTCC.host_rm.single.fastq.gz
+    └── A13-135-177-06_AGTTCC.host_rm.single.subsampled.fastq.gz
+```
+</details>
 

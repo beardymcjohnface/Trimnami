@@ -2,13 +2,16 @@ resources:
     med:
         mem: 16000
         cpu: 8
-        time: 240
+        time: "04:00:00"
 trimnami:
     qc:
         compression:
             1
         minimapIndex:
             -I 8G
+        hostRemoveFlagstat:
+            -f 4
+            -F 3584
         fastp:
             --qualified_quality_phred 15
             --length_required 90
@@ -36,5 +39,3 @@ trimnami:
             filtlong:
                 --min_length 1000
                 --keep_percent 95
-            rasusa:
-                --bases 10000000

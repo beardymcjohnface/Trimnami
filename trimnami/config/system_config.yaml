@@ -1,4 +1,10 @@
 trimnami:
+    trimmers:
+    - fastp
+    - prinseq
+    - roundAB
+    - nanopore
+    - notrim
     args:
         reads:
         output:
