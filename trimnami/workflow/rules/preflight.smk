@@ -101,7 +101,7 @@ for trimmer in config["trimmers"]:
         targets[trimmer] += expand(os.path.join(dir[trimmer], "{file}"), file=samples["reads"][sample_name]["trimmed_targets"])
 
     # populate fastqc targets
-    if config["args"]["fastqc"] is not None:
+    if config["args"]["fastqc"]:
         targets[trimmer] += [
             os.path.join(dir["reports"], trimmer + ".fastqc.html"),
             os.path.join(dir["reports"], "untrimmed.fastqc.html")
