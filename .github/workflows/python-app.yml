@@ -40,33 +40,20 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
 
     steps:
-      - uses: "actions/checkout@v3"
-        with:
-          fetch-depth: 0
-
-      # Setup env
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          use-mamba: true
-          mamba-version: "*"
-          channel-priority: false
-          activate-environment: trimnami
-          environment-file: build/environment.yaml
-          python-version: ${{ matrix.python-version }}
-          auto-activate-base: false
-
-      - name: "Test and generate coverage report on ${{ matrix.os }} for Python ${{ matrix.python-version }}"
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest coverage
+        python -m pip install .
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Test and generate coverage
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest coverage
-          python -m pip install .
           coverage run -m pytest
-          coverage xml
-
-#      - name: "Test and generate coverage report on ${{ matrix.os }} for Python ${{ matrix.python-version }}"
-#        run: |
-#          export AR=/usr/bin/ar
-#          python -m pip install --upgrade pip setuptools wheel
-#          python -m pip install pytest coverage
-#          python -m pip install .
-#          coverage run -m pytest
