@@ -43,10 +43,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Setup env
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          use-mamba: false
-#          mamba-version: "*"
+          use-mamba: true
+          mamba-version: "*"
           channel-priority: false
           activate-environment: trimnami
           environment-file: build/environment.yaml
@@ -55,8 +56,16 @@ jobs:
 
       - name: "Test and generate coverage report on ${{ matrix.os }} for Python ${{ matrix.python-version }}"
         run: |
-          export AR=/usr/bin/ar
-          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade pip
           python -m pip install pytest coverage
           python -m pip install .
           coverage run -m pytest
+          coverage xml
+
+#      - name: "Test and generate coverage report on ${{ matrix.os }} for Python ${{ matrix.python-version }}"
+#        run: |
+#          export AR=/usr/bin/ar
+#          python -m pip install --upgrade pip setuptools wheel
+#          python -m pip install pytest coverage
+#          python -m pip install .
+#          coverage run -m pytest
