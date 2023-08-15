@@ -26,8 +26,7 @@ rule filtlong:
         os.path.join(dir["log"], "filtlong_{sample}{host}.log")
     shell:
         """
-            export LC_ALL=en_US.UTF-8
-            filtlong {params.params} {input.i} | gzip -1 > {output.o} 2> {log}
+        filtlong {params.params} {input.i} | gzip -1 > {output.o} 2> {log}
         """
 
 
