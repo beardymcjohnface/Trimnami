@@ -45,13 +45,13 @@ jobs:
           fetch-depth: 0
 
       # Setup env
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v2.1.1
         with:
           use-mamba: true
           mamba-version: "*"
           channel-priority: false
           activate-environment: trimnami
-#          environment-file: build/environment.yaml
+          environment-file: build/environment.yaml
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
 
