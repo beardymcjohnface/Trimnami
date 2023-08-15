@@ -49,9 +49,10 @@ jobs:
         with:
           use-mamba: true
           mamba-version: "*"
-          channel-priority: false
-          activate-environment: trimnami
-          environment-file: build/environment.yaml
+          channels: conda-forge,bioconda,defaults
+          channel-priority: true
+#          activate-environment: trimnami
+#          environment-file: build/environment.yaml
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
 
