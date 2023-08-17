@@ -8,21 +8,20 @@ rule fastp:
 rule fastp_paired_end:
     """Read trimming with fastp for paired reads"""
     input:
-        r1=os.path.join(dir["temp"],"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir["temp"],"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir["temp"],"{sample}_S{host}.fastq.gz"),
+        r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
+        r2=lambda wildcards: samples["reads"][wildcards.sample]["R2"],
     output:
-        r1=os.path.join(dir["fastp"],"{sample}_R1{host}.fastq.gz"),
-        r2=os.path.join(dir["fastp"],"{sample}_R2{host}.fastq.gz"),
-        s=os.path.join(dir["fastp"],"{sample}_S{host}.fastq.gz"),
-        s1=temp(os.path.join(dir["fastp"],"{sample}_S1{host}.fastq.gz")),
-        s2=temp(os.path.join(dir["fastp"],"{sample}_S2{host}.fastq.gz")),
-        stats=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.json")),
-        html=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.html"))
+        r1=os.path.join(dir["fastp"],"{sample}_R1.fastq.gz"),
+        r2=os.path.join(dir["fastp"],"{sample}_R2.fastq.gz"),
+        s=os.path.join(dir["fastp"],"{sample}_S.fastq.gz"),
+        s1=temp(os.path.join(dir["fastp"],"{sample}_S1.fastq.gz")),
+        s2=temp(os.path.join(dir["fastp"],"{sample}_S2.fastq.gz")),
+        stats=temp(os.path.join(dir["fastp"],"{sample}.stats.json")),
+        html=temp(os.path.join(dir["fastp"],"{sample}.stats.html"))
     benchmark:
-        os.path.join(dir["bench"],"fastp.{sample}{host}.txt")
+        os.path.join(dir["bench"],"fastp.{sample}.txt")
     log:
-        os.path.join(dir["log"],"fastp.{sample}{host}.log")
+        os.path.join(dir["log"],"fastp.{sample}.log")
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",
@@ -33,7 +32,8 @@ rule fastp_paired_end:
         os.path.join(dir["env"],"fastp.yaml")
     params:
         fastp=config["qc"]["fastp"],
-        compression=config["qc"]["compression"]
+        compression=config["qc"]["compression"],
+        s= lambda wildcards: samples["reads"][wildcards.sample]["S"],
     shell:
         """
         fastp \
@@ -49,10 +49,10 @@ rule fastp_paired_end:
             --thread {threads} \
             {params.fastp} \
             2> {log}
-        if [[ -s {input.s} ]]
+        if [[ -s {params.s} ]]
         then
             fastp \
-            -i {input.s} \
+            -i {params.s} \
             -o {output.s} \
             -z {params.compression} \
             -j {output.stats} \
@@ -70,15 +70,15 @@ rule fastp_paired_end:
 rule fastp_single_end:
     """Read trimming with fastp for single end reads"""
     input:
-        r1=os.path.join(dir["temp"],"{sample}_single{host}.fastq.gz"),
+        r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=os.path.join(dir["fastp"],"{sample}_single{host}.fastq.gz"),
-        stats=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.json")),
-        html=temp(os.path.join(dir["fastp"],"{sample}{host}.stats.html"))
+        r1=os.path.join(dir["fastp"],"{sample}_single.fastq.gz"),
+        stats=temp(os.path.join(dir["fastp"],"{sample}.stats.json")),
+        html=temp(os.path.join(dir["fastp"],"{sample}.stats.html"))
     benchmark:
-        os.path.join(dir["bench"],"fastp.{sample}{host}.txt")
+        os.path.join(dir["bench"],"fastp.{sample}.txt")
     log:
-        os.path.join(dir["log"],"fastp.{sample}{host}.log")
+        os.path.join(dir["log"],"fastp.{sample}.log")
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",
