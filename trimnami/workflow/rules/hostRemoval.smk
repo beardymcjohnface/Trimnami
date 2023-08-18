@@ -36,7 +36,9 @@ rule host_removal_mapping_paired:
         t1=temp(os.path.join("{dir}","rm.{sample}_R1.fastq.gz")),
         t2=temp(os.path.join("{dir}","rm.{sample}_R2.fastq.gz")),
         ts=temp(os.path.join("{dir}","rm.{sample}_S.fastq.gz")),
-        o=temp(os.path.join("{dir}","{sample}_0.host_rm.fastq.gz")),
+        s=temp(os.path.join("{dir}","rm.{sample}_s.host_rm.fastq.gz")),
+        o=temp(os.path.join("{dir}","rm.{sample}_o.host_rm.fastq.gz")),
+        O=temp(os.path.join("{dir}","rm.{sample}_O.host_rm.fastq.gz")),
     params:
         compression=config["qc"]["compression"],
         minimap_mode=config["args"]["minimap"],
@@ -61,15 +63,16 @@ rule host_removal_mapping_paired:
         mv {input.r2} {output.t2}
         minimap2 -ax {params.minimap_mode} -t {threads} --secondary=no {input.host} {output.t1} {output.t2} 2> {log.mm} \
             | samtools view -h {params.flagFilt} 2> {log.sv} \
-            | samtools fastq -N -O -c {params.compression} -1 {output.r1} -2 {output.r2} -0 {output.o} -s {output.rs} 2> {log.fq}
-        cat {output.o} >> {output.rs}
+            | samtools fastq -N -O -c {params.compression} -1 {output.r1} -2 {output.r2} -0 {output.O} -s {output.rs} 2> {log.fq}
+        cat {output.O} >> {output.rs}
         if [[ -s {input.s} ]]
         then
             mv {input.s} {output.ts}
             minimap2 -ax {params.minimap_mode} -t {threads} --secondary=no {input.host} {output.ts} 2> {log.mm} \
                 | samtools view -h {params.flagFilt} 2> {log.sv} \
-                | samtools fastq -n -O -c {params.compression} -o {output.o} 2> {log.fq}
-            cat {output.o} >> {output.rs}
+                | samtools fastq -n -O -c {params.compression} -o {output.o} -0 {output.O} -s {output.s} 2> {log.fq}
+            cat {output.o} {output.O} {output.s} >> {output.rs}
+        fi
         """
 
 
@@ -111,35 +114,35 @@ rule host_removal_mapping_single:
         """
 
 
-# rule skip_host_rm_paired:
-#     """Skip host removal of paired reads"""
-#     input:
-#         r1 = lambda wildcards: samples["reads"][wildcards.sample]["R1"],
-#         r2 = lambda wildcards: samples["reads"][wildcards.sample]["R2"],
-#     output:
-#         r1 = temp(os.path.join(dir["temp"],"{sample}_R1.fastq.gz")),
-#         r2 = temp(os.path.join(dir["temp"],"{sample}_R2.fastq.gz")),
-#         s = temp(os.path.join(dir["temp"],"{sample}_S.fastq.gz")),
-#     params:
-#         is_paired = True
-#     localrule:
-#         True
-#     log:
-#         stderr = os.path.join(dir["log"], "skip_host_rm_pair.{sample}.err"),
-#         stdout = os.path.join(dir["log"], "skip_host_rm_pair.{sample}.out")
-#     script:
-#         os.path.join(dir["scripts"], "skipHostRm.py")
-#
-#
-# rule skip_host_rm_single:
-#     """Skip host removal of paired reads"""
-#     input:
-#         r1 = lambda wildcards: samples["reads"][wildcards.sample]["R1"],
-#     output:
-#         r1 = temp(os.path.join(dir["temp"],"{sample}_single.fastq.gz")),
-#     params:
-#         is_paired = False
-#     localrule:
-#         True
-#     script:
-#         os.path.join(dir["scripts"], "skipHostRm.py")
+rule skip_host_rm_paired:
+    """Skip host removal of paired reads"""
+    input:
+        r1 = lambda wildcards: samples["reads"][wildcards.sample]["R1"],
+        r2 = lambda wildcards: samples["reads"][wildcards.sample]["R2"],
+    output:
+        r1 = temp(os.path.join(dir["temp"],"{sample}_R1.fastq.gz")),
+        r2 = temp(os.path.join(dir["temp"],"{sample}_R2.fastq.gz")),
+        s = temp(os.path.join(dir["temp"],"{sample}_S.fastq.gz")),
+    params:
+        is_paired = True
+    localrule:
+        True
+    log:
+        stderr = os.path.join(dir["log"], "skip_host_rm_pair.{sample}.err"),
+        stdout = os.path.join(dir["log"], "skip_host_rm_pair.{sample}.out")
+    script:
+        os.path.join(dir["scripts"], "skipHostRm.py")
+
+
+rule skip_host_rm_single:
+    """Skip host removal of paired reads"""
+    input:
+        r1 = lambda wildcards: samples["reads"][wildcards.sample]["R1"],
+    output:
+        r1 = temp(os.path.join(dir["temp"],"{sample}_single.fastq.gz")),
+    params:
+        is_paired = False
+    localrule:
+        True
+    script:
+        os.path.join(dir["scripts"], "skipHostRm.py")
