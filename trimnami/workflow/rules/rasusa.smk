@@ -2,6 +2,7 @@ rule rasusa_single:
     input:
         i=os.path.join(dir["out"], "{dir}", "{sample}_single{host}.fastq.gz")
     output:
+        t=temp(os.path.join(dir["out"],"{dir}","rm.{sample}_single{host}.fastq.gz")),
         o=os.path.join(dir["out"], "{dir}", "{sample}_single{host}.subsampled.fastq.gz"),
     resources:
         mem_mb=resources["med"]["mem"],
@@ -19,12 +20,13 @@ rule rasusa_single:
         os.path.join(dir["log"], "rasusa_single.{dir}.{sample}{host}.log")
     shell:
         """
-            rasusa \
-                -i {input.i} \
-                -o {output.o} \
-                -O g \
-                --bases {params.bases} \
-                2> {log}
+        mv {input.i} {output.t}
+        rasusa \
+            -i {output.t} \
+            -o {output.o} \
+            -O g \
+            --bases {params.bases} \
+            2> {log}
         """
 
 
@@ -37,6 +39,9 @@ rule rasusa_paired:
         r1=os.path.join(dir["out"], "{dir}", "{sample}_R1{host}.subsampled.fastq.gz"),
         r2=os.path.join(dir["out"], "{dir}", "{sample}_R2{host}.subsampled.fastq.gz"),
         rs=os.path.join(dir["out"], "{dir}", "{sample}_S{host}.subsampled.fastq.gz"),
+        t1=temp(os.path.join(dir["out"],"{dir}","rm.{sample}_R1{host}.fastq.gz")),
+        t2=temp(os.path.join(dir["out"],"{dir}","rm.{sample}_R2{host}.fastq.gz")),
+        ts=temp(os.path.join(dir["out"],"{dir}","rm.{sample}_S{host}.fastq.gz")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",
@@ -53,19 +58,22 @@ rule rasusa_paired:
         os.path.join(dir["log"], "rasusa_paired.{dir}.{sample}{host}.log")
     shell:
         """
+        mv {input.r1} {output.t1}
+        mv {input.r2} {output.t2}
+        mv {input.rs} {output.ts}
         rasusa \
-            -i {input.r1} \
-            -i {input.r2} \
+            -i {output.t1} \
+            -i {output.t2} \
             -o {output.r1} \
             -o {output.r2} \
             -O g \
             --bases {params.bases} \
             2> {log}
         
-        if (( $(wc -c {input.rs} | awk '{{print$1}}') > 100 ))
+        if (( $(wc -c {output.ts} | awk '{{print$1}}') > 100 ))
         then
             rasusa \
-                -i {input.rs} \
+                -i {output.ts} \
                 -o {output.rs} \
                 -O g \
                 --bases {params.bases} \
