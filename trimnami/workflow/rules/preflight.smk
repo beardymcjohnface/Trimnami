@@ -45,6 +45,7 @@ Define target filename suffixes
 config["args"]["hostStr"] = ""
 config["args"]["hostIndex"] = ""
 config["args"]["subsampleStr"] = ""
+config["args"]["outFormat"] = ".fastq"
 
 if config["args"]["host"] is not None:
     config["args"]["hostStr"] = ".host_rm"
@@ -58,11 +59,15 @@ if config["args"]["host"] is not None:
 if config["args"]["subsample"] is not None:
     config["args"]["subsampleStr"] = ".subsampled"
 
+if config["args"]["fasta"]:
+    config["args"]["outFormat"] = ".fasta"
+
+
 # generate target base names
 for sample_name in samples["names"]:
     if samples["reads"][sample_name]["R2"] is not None:
         samples["reads"][sample_name]["trimmed_targets"] = expand(
-            sample_name + "{R12}" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + ".fastq.gz",
+            sample_name + "{R12}" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
             R12 = ["_R1", "_R2", "_S"]
         )
         samples["reads"][sample_name]["fastqc_targets"] = expand(
@@ -75,7 +80,7 @@ for sample_name in samples["names"]:
         )
     else:
         samples["reads"][sample_name]["trimmed_targets"] = [
-            sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + ".fastq.gz"
+            sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
         ]
         samples["reads"][sample_name]["fastqc_targets"] = [
             sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip"
