@@ -1,16 +1,14 @@
 rule fastq_to_fasta:
-    """Conver the trimmed fastq file to a fasta file"""
+    """Convert the trimmed fastq file to a fasta file"""
     input:
-        os.path.join("{dir}","{file}.fastq.gz")
+        os.path.join(dir["temp"], "{dir}","{file}.fastq.gz")
     output:
-        fastq = temp(os.path.join("{dir}","{file}.rm.fastq.gz")),
-        fasta = os.path.join("{dir}","{file}.fasta.gz"),
+        temp(os.path.join(dir["temp"], "{dir}","{file}.fasta.gz")),
     params:
-        compression = "-" + config["qc"]["compression"]
+        compression = "-" + str(config["qc"]["compression"])
     conda:
         os.path.join(dir["env"], "seqtk.yaml")
     shell:
-        ("mv {input} {output.fastq}; "
-        "seqtk seq {output.fastq} -A "
+        ("seqtk seq {input} -A "
             "| gzip {params.compression} "
-            "> {output.fasta}")
+            "> {output}")

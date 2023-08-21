@@ -3,7 +3,7 @@ trimnami:
     - fastp
     - prinseq
     - roundAB
-    - nanopore
+    - filtlong
     - notrim
     args:
         reads:

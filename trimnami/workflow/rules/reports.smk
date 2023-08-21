@@ -1,4 +1,3 @@
-
 rule sample_manifest:
     """Print the parsed sample manifest"""
     output:

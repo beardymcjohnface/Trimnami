@@ -22,6 +22,7 @@ onerror:
 
 
 wildcard_constraints:
+    trimmer = "(?!untrimmed).*",
     host = ".{0}|\.host_rm",
     subsample = ".{0}|\.subsampled",
     hostSubsampled = ".{0}|.+"
@@ -33,6 +34,8 @@ Import non-trimming rules files
 include: os.path.join("rules", "preflight.smk")
 include: os.path.join("rules", "hostRemoval.smk")
 include: os.path.join("rules", "fastqc.smk")
+include: os.path.join("rules", "fasta.smk")
+include: os.path.join("rules", "results.smk")
 include: os.path.join("rules", "rasusa.smk")
 include: os.path.join("rules", "reports.smk")
 
@@ -52,8 +55,7 @@ for trimmer in config["trimmers"]:
 
 rule default_trimmer:
     input:
-        targets["fastp"],
-        targets["reports"]
+        targets["output"]["fastp"],
 
 
 rule print_trimmers:
