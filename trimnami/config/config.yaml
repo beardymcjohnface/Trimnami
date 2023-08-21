@@ -35,7 +35,6 @@ trimnami:
             -trim_qual_left 30
             -trim_qual_right 30 
             -trim_qual_window 10
-        nanopore:
-            filtlong:
-                --min_length 1000
-                --keep_percent 95
+        filtlong:
+            --min_length 1000
+            --keep_percent 95

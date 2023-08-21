@@ -29,16 +29,13 @@ rule fastqc_paired_untrimmed:
     benchmark:
         os.path.join(dir["bench"],"fastqc_paired_untrimmed.{sample}.txt")
     shell:
-        """
-        fastqc {input} \
-            -t {threads} \
-            --outdir {params.dir} \
-            &> {log}
-        
-        mv {params.z1} {output.z1}
-        mv {params.z2} {output.z2}
-        rm {params.r1} {params.r2}
-        """
+        ("fastqc {input} "
+            "-t {threads} "
+            "--outdir {params.dir} "
+            "&> {log}; "
+        "mv {params.z1} {output.z1}; "
+        "mv {params.z2} {output.z2}; "
+        "rm {params.r1} {params.r2}; ")
 
 
 rule fastqc_unpaired_untrimmed:
@@ -66,22 +63,19 @@ rule fastqc_unpaired_untrimmed:
     benchmark:
         os.path.join(dir["bench"],"fastqc_unpaired_untrimmed.{sample}.txt")
     shell:
-        """
-        fastqc {input} \
-            -t {threads} \
-            --outdir {params.dir} \
-            &> {log}
-
-        mv {params.z1} {output.z1}
-        rm {params.r1}
-        """
+        ("fastqc {input} "
+            "-t {threads} "
+            "--outdir {params.dir} "
+            "&> {log}; "
+        "mv {params.z1} {output.z1}; "
+        "rm {params.r1}; ")
 
 
 rule fastqc_paired_trimmed:
     input:
-        r1 = os.path.join(dir["out"], "{trimmer}", "{sample}_R1{hostSubsampled}.fastq.gz"),
-        r2 = os.path.join(dir["out"], "{trimmer}", "{sample}_R2{hostSubsampled}.fastq.gz"),
-        rs = os.path.join(dir["out"], "{trimmer}", "{sample}_S{hostSubsampled}.fastq.gz"),
+        r1 = os.path.join(dir["temp"], "{trimmer}", "{sample}_R1{hostSubsampled}.fastq.gz"),
+        r2 = os.path.join(dir["temp"], "{trimmer}", "{sample}_R2{hostSubsampled}.fastq.gz"),
+        rs = os.path.join(dir["temp"], "{trimmer}", "{sample}_S{hostSubsampled}.fastq.gz"),
     output:
         r1 = temp(os.path.join(dir["temp"],"{trimmer}","{sample}_R1{hostSubsampled}_fastqc.html")),
         r2 = temp(os.path.join(dir["temp"],"{trimmer}","{sample}_R2{hostSubsampled}_fastqc.html")),
@@ -107,31 +101,27 @@ rule fastqc_paired_trimmed:
     benchmark:
         os.path.join(dir["bench"],"fastqc_paired_trimmed.{sample}.{trimmer}{hostSubsampled}.txt")
     shell:
-        """
-        fastqc {input.r1} {input.r2} \
-            -t {threads} \
-            --outdir {params.dir} \
-            &> {log}
-        
-        if [[ -s {input.rs} ]]
-        then
-            fastqc {input.rs} \
-                -t {threads} \
-                --outdir {params.dir} \
-                &> {log}
-        else
-            touch {params.zs} {output.rs}
-        fi
-        
-        mv {params.z1} {output.z1}
-        mv {params.z2} {output.z2}
-        mv {params.zs} {output.zs}
-        """
+        ("fastqc {input.r1} {input.r2} "
+            "-t {threads} "
+            "--outdir {params.dir} "
+            "&> {log}; "
+        "if [[ -s {input.rs} ]]; "
+        "then "
+            "fastqc {input.rs} "
+                "-t {threads} "
+                "--outdir {params.dir} "
+                "&> {log}; "
+        "else "
+            "touch {params.zs} {output.rs}; "
+        "fi; "
+        "mv {params.z1} {output.z1}; "
+        "mv {params.z2} {output.z2}; "
+        "mv {params.zs} {output.zs}; ")
 
 
 rule fastqc_single_trimmed:
     input:
-        os.path.join(dir["out"],"{trimmer}","{sample}_single{hostSubsampled}.fastq.gz"),
+        os.path.join(dir["temp"],"{trimmer}","{sample}_single{hostSubsampled}.fastq.gz"),
     output:
         r=temp(os.path.join(dir["temp"],"{trimmer}","{sample}_single{hostSubsampled}_fastqc.html")),
         z=temp(os.path.join(dir["reports"],"{trimmer}","{sample}_single{hostSubsampled}_fastqc.zip")),
@@ -151,30 +141,25 @@ rule fastqc_single_trimmed:
     benchmark:
         os.path.join(dir["bench"],"fastqc_single_trimmed.{sample}.{trimmer}{hostSubsampled}.txt")
     shell:
-        """
-        fastqc {input} \
-            -t {threads} \
-            --outdir {params.dir} \
-            &> {log}
-
-        mv {params.z} {output.z}
-        """
+        ("fastqc {input} "
+            "-t {threads} "
+            "--outdir {params.dir} "
+            "&> {log}; "
+        "mv {params.z} {output.z}; ")
 
 
 rule multiqc_fastqc:
     input:
-        lambda wildcards: targets["fastqc"][wildcards.trimmer]
+        lambda wildcards: targets["fastqc"][wildcards.trimUntrim]
     output:
-        os.path.join(dir["reports"], "{trimmer}.fastqc.html")
+        os.path.join(dir["reports"], "{trimUntrim}.fastqc.html")
     params:
-        dir=os.path.join(dir["reports"], "{trimmer}")
+        dir=os.path.join(dir["reports"], "{trimUntrim}")
     conda:
         os.path.join(dir["env"],"multiqc.yaml")
     log:
-        os.path.join(dir["log"],"multiqc_fastqc.{trimmer}.log")
+        os.path.join(dir["log"],"multiqc_fastqc.{trimUntrim}.log")
     benchmark:
-        os.path.join(dir["bench"],"multiqc_fastqc.{trimmer}.txt")
+        os.path.join(dir["bench"],"multiqc_fastqc.{trimUntrim}.txt")
     shell:
-        """
-        multiqc {params.dir} -n {output} --no-data-dir 2> {log}
-        """
+        "multiqc {params.dir} -n {output} --no-data-dir 2> {log}"

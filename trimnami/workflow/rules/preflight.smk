@@ -29,13 +29,19 @@ except (KeyError, AssertionError):
 
 # misc output directories
 dir["temp"] = os.path.join(dir["out"], "temp")
+dir["results"] = os.path.join(dir["out"], "results")
 dir["log"] = os.path.join(dir["out"], "logs")
 dir["reports"] = os.path.join(dir["out"], "reports")
 dir["bench"] = os.path.join(dir["out"], "benchmarks")
 
-# trimmer output directories
+# trimmer temp output directories
 for trimmer in config["trimmers"]:
-    dir[trimmer] = os.path.join(dir["out"], trimmer)
+    dir[trimmer] = os.path.join(dir["temp"], trimmer)
+
+# trimmer final output directories
+dir["output"] = dict()
+for trimmer in config["trimmers"]:
+    dir["output"][trimmer] = os.path.join(dir["results"], trimmer)
 
 
 """
@@ -45,6 +51,7 @@ Define target filename suffixes
 config["args"]["hostStr"] = ""
 config["args"]["hostIndex"] = ""
 config["args"]["subsampleStr"] = ""
+config["args"]["outFormat"] = ".fastq"
 
 if config["args"]["host"] is not None:
     config["args"]["hostStr"] = ".host_rm"
@@ -58,11 +65,15 @@ if config["args"]["host"] is not None:
 if config["args"]["subsample"] is not None:
     config["args"]["subsampleStr"] = ".subsampled"
 
+if config["args"]["fasta"]:
+    config["args"]["outFormat"] = ".fasta"
+
+
 # generate target base names
 for sample_name in samples["names"]:
     if samples["reads"][sample_name]["R2"] is not None:
         samples["reads"][sample_name]["trimmed_targets"] = expand(
-            sample_name + "{R12}" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + ".fastq.gz",
+            sample_name + "{R12}" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
             R12 = ["_R1", "_R2", "_S"]
         )
         samples["reads"][sample_name]["fastqc_targets"] = expand(
@@ -75,7 +86,7 @@ for sample_name in samples["names"]:
         )
     else:
         samples["reads"][sample_name]["trimmed_targets"] = [
-            sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + ".fastq.gz"
+            sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
         ]
         samples["reads"][sample_name]["fastqc_targets"] = [
             sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip"
@@ -91,35 +102,36 @@ Define the actual targets
 targets = dict()
 targets["fastqc"] = dict()
 targets["fastqc"]["untrimmed"] = []
+targets["output"] = dict()
 
 for trimmer in config["trimmers"]:
     targets[trimmer] = []
+    targets["output"][trimmer] = []
     targets["fastqc"][trimmer] = []
 
-    # populate triming targets
+    # populate the temp triming targets
     for sample_name in samples["names"]:
         targets[trimmer] += expand(os.path.join(dir[trimmer], "{file}"), file=samples["reads"][sample_name]["trimmed_targets"])
 
+    # populate the final trimming output targets
+    for sample_name in samples["names"]:
+        targets["output"][trimmer] += expand(
+            os.path.join(dir["output"][trimmer], "{file}"),
+            file=samples["reads"][sample_name]["trimmed_targets"])
+        targets["output"][trimmer] += [os.path.join(dir["out"],"samples.tsv")]
+
     # populate fastqc targets
     if config["args"]["fastqc"]:
-        targets[trimmer] += [
+        targets["output"][trimmer] += [
             os.path.join(dir["reports"], trimmer + ".fastqc.html"),
             os.path.join(dir["reports"], "untrimmed.fastqc.html")
         ]
         for sample_name in samples["names"]:
             targets["fastqc"]["untrimmed"] += expand(
-                os.path.join(dir["reports"], "untrimmed","{file}"),
+                os.path.join(dir["reports"], "untrimmed", "{file}"),
                 file=samples["reads"][sample_name]["fastqc_untrimmed"]
             )
             targets["fastqc"][trimmer] += expand(
                 os.path.join(dir["reports"], trimmer, "{file}"),
                 file=samples["reads"][sample_name]["fastqc_targets"]
             )
-
-
-"""
-Reports
-"""
-targets["reports"] = [
-    os.path.join(dir["out"],"samples.tsv"),
-]

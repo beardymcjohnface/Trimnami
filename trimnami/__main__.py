@@ -67,6 +67,12 @@ def common_options(func):
             show_default=True,
         ),
         click.option(
+            "--fasta/--no-fasta",
+            default=False,
+            help="Output fasta format files instead of fastq",
+            show_default=True,
+        ),
+        click.option(
             "--subsample",
             default=None,
             help="Subsample reads to this many bases with rasusa, e.g. 1000, 1m, 1g, 1t",
@@ -151,7 +157,7 @@ Available targets:
     fastp           Trim reads with fastp (default)
     prinseq         Trim reads with prinseq++
     roundAB         Trim round A/B viral metagenome reads
-    nanopore        Trim nanopore reads
+    filtlong        Filter out short-length longreads
     notrim          Skip read trimming
     print_trimmers  List available trimming modules
 """
@@ -178,6 +184,7 @@ def run(**kwargs):
                 "output": kwargs["output"],
                 "host": kwargs["host"],
                 "fastqc": kwargs["fastqc"],
+                "fasta": kwargs["fasta"],
                 "subsample": kwargs["subsample"],
                 "minimap": kwargs["minimap"],
                 "log": kwargs["log"]
@@ -211,6 +218,7 @@ def test(**kwargs):
                 "reads": snake_base(os.path.join("test_data")),
                 "host": None,
                 "fastqc": kwargs["fastqc"],
+                "fasta": kwargs["fasta"],
                 "subsample": kwargs["subsample"],
                 "output": kwargs["output"],
                 "minimap": "sr",
@@ -246,6 +254,7 @@ def testhost(**kwargs):
                 "host": snake_base(os.path.join("test_data", "ref.fna")),
                 "output": kwargs["output"],
                 "fastqc": kwargs["fastqc"],
+                "fasta": kwargs["fasta"],
                 "subsample": kwargs["subsample"],
                 "minimap": "sr",
                 "log": kwargs["log"]
@@ -280,6 +289,7 @@ def testnp(**kwargs):
                 "host": snake_base(os.path.join("test_data", "ref.fna")),
                 "output": kwargs["output"],
                 "fastqc": kwargs["fastqc"],
+                "fasta": kwargs["fasta"],
                 "subsample": kwargs["subsample"],
                 "minimap": "map-ont",
                 "log": kwargs["log"]
@@ -287,7 +297,7 @@ def testnp(**kwargs):
         }
     }
 
-    kwargs["snake_args"] = ["nanopore"]
+    kwargs["snake_args"] = ["filtlong"]
 
     # run!
     run_snakemake(
