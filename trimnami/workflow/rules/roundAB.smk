@@ -377,8 +377,8 @@ rule roundAB_single_end:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["roundAB"],"{sample}_single.fastq.gz")),
-        tmp=temp(os.path.join(dir["temp"],"{sample}_single.fastq")),
+        r1=temp(os.path.join(dir["roundAB"],"{sample}.fastq.gz")),
+        tmp=temp(os.path.join(dir["temp"],"{sample}.fastq")),
     benchmark:
         os.path.join(dir["bench"],"remove_low_quality.{sample}.txt")
     log:

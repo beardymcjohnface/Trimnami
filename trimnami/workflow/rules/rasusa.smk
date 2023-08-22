@@ -1,8 +1,8 @@
 rule rasusa_single:
     input:
-        i=os.path.join(dir["temp"], "{dir}", "{sample}_single{host}.fastq.gz")
+        i=os.path.join(dir["temp"], "{dir}", "{sample}{host}.fastq.gz")
     output:
-        o=temp(os.path.join(dir["temp"], "{dir}", "{sample}_single{host}.subsampled.fastq.gz")),
+        o=temp(os.path.join(dir["temp"], "{dir}", "{sample}{host}.subsampled.fastq.gz")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",

@@ -8,7 +8,7 @@ rule filtlong_single:
     input:
         i=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        o=temp(os.path.join(dir["filtlong"],"{sample}_single.fastq.gz")),
+        o=temp(os.path.join(dir["filtlong"],"{sample}.fastq.gz")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",

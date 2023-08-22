@@ -59,7 +59,7 @@ rule prinseq_single:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["prinseq"],"{sample}_single.fastq.gz")),
+        r1=temp(os.path.join(dir["prinseq"],"{sample}.fastq.gz")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",

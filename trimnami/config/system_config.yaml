@@ -5,6 +5,7 @@ trimnami:
     - roundAB
     - filtlong
     - notrim
+    - cutadapt
     args:
         reads:
         output:

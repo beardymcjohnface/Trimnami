@@ -69,7 +69,7 @@ rule fastp_single_end:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["fastp"],"{sample}_single.fastq.gz")),
+        r1=temp(os.path.join(dir["fastp"],"{sample}.fastq.gz")),
         stats=temp(os.path.join(dir["fastp"],"{sample}.stats.json")),
         html=temp(os.path.join(dir["fastp"],"{sample}.stats.html"))
     benchmark:

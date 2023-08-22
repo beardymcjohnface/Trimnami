@@ -12,6 +12,8 @@ trimnami:
         hostRemoveFlagstat:
             -f 4
             -F 3584
+        cutadapt:
+            -m 40
         fastp:
             --qualified_quality_phred 15
             --length_required 90

@@ -86,10 +86,10 @@ for sample_name in samples["names"]:
         )
     else:
         samples["reads"][sample_name]["trimmed_targets"] = [
-            sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
+            sample_name + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
         ]
         samples["reads"][sample_name]["fastqc_targets"] = [
-            sample_name + "_single" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip"
+            sample_name + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip"
         ]
         samples["reads"][sample_name]["fastqc_untrimmed"] = [
             sample_name + ".untrimmed_single_fastqc.zip"
