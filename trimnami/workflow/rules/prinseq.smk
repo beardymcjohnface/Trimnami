@@ -11,7 +11,7 @@ rule prinseq_paired:
     output:
         r1=temp(os.path.join(dir["prinseq"],"{sample}_R1.fastq.gz")),
         r2=temp(os.path.join(dir["prinseq"],"{sample}_R2.fastq.gz")),
-        s=temp(os.path.join(dir["prinseq"],"{sample}_S.fastq.gz")),
+        s=temp(os.path.join(dir["prinseq"],"{sample}_RS.fastq.gz")),
         s1=temp(os.path.join(dir["prinseq"],"{sample}_S1.fastq.gz")),
         s2=temp(os.path.join(dir["prinseq"],"{sample}_S2.fastq.gz")),
     resources:
@@ -59,7 +59,7 @@ rule prinseq_single:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["prinseq"],"{sample}.fastq.gz")),
+        r1=temp(os.path.join(dir["prinseq"],"{sample}_S.fastq.gz")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",

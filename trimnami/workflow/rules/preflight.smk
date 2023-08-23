@@ -74,11 +74,11 @@ for sample_name in samples["names"]:
     if samples["reads"][sample_name]["R2"] is not None:
         samples["reads"][sample_name]["trimmed_targets"] = expand(
             sample_name + "{R12}" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
-            R12 = ["_R1", "_R2", "_S"]
+            R12 = ["_R1", "_R2", "_RS"]
         )
         samples["reads"][sample_name]["fastqc_targets"] = expand(
             sample_name + "{R12}" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip",
-            R12 = ["_R1", "_R2", "_S"]
+            R12 = ["_R1", "_R2", "_RS"]
         )
         samples["reads"][sample_name]["fastqc_untrimmed"] = expand(
             sample_name + "{R12}_fastqc.zip",
@@ -86,10 +86,10 @@ for sample_name in samples["names"]:
         )
     else:
         samples["reads"][sample_name]["trimmed_targets"] = [
-            sample_name + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
+            sample_name + "_S" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + config["args"]["outFormat"] + ".gz",
         ]
         samples["reads"][sample_name]["fastqc_targets"] = [
-            sample_name + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip"
+            sample_name + "_S" + config["args"]["hostStr"] + config["args"]["subsampleStr"] + "_fastqc.zip"
         ]
         samples["reads"][sample_name]["fastqc_untrimmed"] = [
             sample_name + ".untrimmed_single_fastqc.zip"

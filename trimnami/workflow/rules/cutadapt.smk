@@ -13,7 +13,7 @@ rule cutadapt_paired_end:
     output:
         r1=temp(os.path.join(dir["cutadapt"],"{sample}_R1.fasta")),
         r2=temp(os.path.join(dir["cutadapt"],"{sample}_R2.fasta")),
-        s=temp(os.path.join(dir["cutadapt"],"{sample}_S.fasta")),
+        s=temp(os.path.join(dir["cutadapt"],"{sample}_RS.fasta")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",
@@ -60,7 +60,7 @@ rule cutadapt_single_end:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
         adapters=os.path.join(dir["db"],"IlluminaAdapters.fa")
     output:
-        r1=temp(os.path.join(dir["cutadapt"],"{sample}.fasta")),
+        r1=temp(os.path.join(dir["cutadapt"],"{sample}_S.fasta")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",

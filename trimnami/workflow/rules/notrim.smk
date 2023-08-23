@@ -12,7 +12,7 @@ rule notrim_paired_end:
     output:
         r1=temp(os.path.join(dir["notrim"],"{sample}_R1.fastq.gz")),
         r2=temp(os.path.join(dir["notrim"],"{sample}_R2.fastq.gz")),
-        s=temp(os.path.join(dir["notrim"],"{sample}_S.fastq.gz")),
+        s=temp(os.path.join(dir["notrim"],"{sample}_RS.fastq.gz")),
     params:
         s = lambda wildcards: samples["reads"][wildcards.sample]["S"],
         is_paired = True
@@ -25,7 +25,7 @@ rule notrim_single_end:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["notrim"],"{sample}.fastq.gz")),
+        r1=temp(os.path.join(dir["notrim"],"{sample}_S.fastq.gz")),
     params:
         is_paired = False
     script:

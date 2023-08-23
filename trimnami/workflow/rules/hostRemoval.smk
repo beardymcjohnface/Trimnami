@@ -27,12 +27,12 @@ rule host_removal_mapping_paired:
     input:
         r1=os.path.join(dir["temp"], "{dir}","{sample}_R1.fastq.gz"),
         r2=os.path.join(dir["temp"], "{dir}","{sample}_R2.fastq.gz"),
-        s=os.path.join(dir["temp"], "{dir}","{sample}_S.fastq.gz"),
+        s=os.path.join(dir["temp"], "{dir}","{sample}_RS.fastq.gz"),
         host=lambda wildcards: config["args"]["hostIndex"] if config["args"]["host"] else ""
     output:
         r1=temp(os.path.join(dir["temp"], "{dir}","{sample}_R1.host_rm.fastq.gz")),
         r2=temp(os.path.join(dir["temp"], "{dir}","{sample}_R2.host_rm.fastq.gz")),
-        rs=temp(os.path.join(dir["temp"], "{dir}","{sample}_S.host_rm.fastq.gz")),
+        rs=temp(os.path.join(dir["temp"], "{dir}","{sample}_RS.host_rm.fastq.gz")),
         s=temp(os.path.join(dir["temp"], "{dir}","rm.{sample}_s.host_rm.fastq.gz")),
         o=temp(os.path.join(dir["temp"], "{dir}","rm.{sample}_o.host_rm.fastq.gz")),
         O=temp(os.path.join(dir["temp"], "{dir}","rm.{sample}_O.host_rm.fastq.gz")),
@@ -99,12 +99,12 @@ rule host_removal_mapping_paired:
 rule host_removal_mapping_single:
     """Map reads to host and return unmapped reads"""
     input:
-        r1=os.path.join(dir["temp"], "{dir}","{sample}.fastq.gz"),
+        r1=os.path.join(dir["temp"], "{dir}","{sample}_S.fastq.gz"),
         host=lambda wildcards: config["args"]["hostIndex"] if config["args"]["host"] else ""
     output:
-        r1=temp(os.path.join(dir["temp"], "{dir}","{sample}.host_rm.fastq.gz")),
-        s=temp(os.path.join(dir["temp"], "{dir}","{sample}.host_rm.S.fastq.gz")),
-        o=temp(os.path.join(dir["temp"], "{dir}","{sample}.host_rm.O.fastq.gz")),
+        r1=temp(os.path.join(dir["temp"], "{dir}","{sample}_S.host_rm.fastq.gz")),
+        s=temp(os.path.join(dir["temp"], "{dir}","{sample}_S.host_rm.S.fastq.gz")),
+        o=temp(os.path.join(dir["temp"], "{dir}","{sample}_S.host_rm.O.fastq.gz")),
     params:
         compression=config["qc"]["compression"],
         minimap_mode=config["args"]["minimap"],
