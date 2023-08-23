@@ -346,7 +346,7 @@ rule zip_roundAB:
     output:
         r1=temp(os.path.join(dir["roundAB"],"{sample}_R1.fastq.gz")),
         r2=temp(os.path.join(dir["roundAB"],"{sample}_R2.fastq.gz")),
-        s=temp(os.path.join(dir["roundAB"],"{sample}_S.fastq.gz")),
+        s=temp(os.path.join(dir["roundAB"],"{sample}_RS.fastq.gz")),
     benchmark:
         os.path.join(dir["bench"],"zip_roundAB.{sample}.txt")
     log:
@@ -377,8 +377,8 @@ rule roundAB_single_end:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["roundAB"],"{sample}_single.fastq.gz")),
-        tmp=temp(os.path.join(dir["temp"],"{sample}_single.fastq")),
+        r1=temp(os.path.join(dir["roundAB"],"{sample}_S.fastq.gz")),
+        tmp=temp(os.path.join(dir["temp"],"{sample}_S.fastq")),
     benchmark:
         os.path.join(dir["bench"],"remove_low_quality.{sample}.txt")
     log:

@@ -8,7 +8,7 @@ rule filtlong_single:
     input:
         i=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        o=temp(os.path.join(dir["filtlong"],"{sample}_single.fastq.gz")),
+        o=temp(os.path.join(dir["filtlong"],"{sample}_S.fastq.gz")),
     resources:
         mem_mb=resources["med"]["mem"],
         mem=str(resources["med"]["mem"]) + "MB",
@@ -37,7 +37,7 @@ rule filtlong_paried:
     output:
         r1=temp(os.path.join(dir["filtlong"],"{sample}_R1.fastq.gz")),
         r2=temp(os.path.join(dir["filtlong"],"{sample}_R2.fastq.gz")),
-        s=temp(os.path.join(dir["filtlong"],"{sample}_S.fastq.gz")),
+        s=temp(os.path.join(dir["filtlong"],"{sample}_RS.fastq.gz")),
     params:
         s = lambda wildcards: samples["reads"][wildcards.sample]["S"],
         params=config["qc"]["filtlong"]

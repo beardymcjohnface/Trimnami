@@ -157,6 +157,7 @@ Available targets:
     fastp           Trim reads with fastp (default)
     prinseq         Trim reads with prinseq++
     roundAB         Trim round A/B viral metagenome reads
+    cutadapt        Trim with cutadapt (support for FASTA input)
     filtlong        Filter out short-length longreads
     notrim          Skip read trimming
     print_trimmers  List available trimming modules

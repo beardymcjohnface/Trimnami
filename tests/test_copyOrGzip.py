@@ -4,7 +4,7 @@ import shutil
 import pytest
 import gzip
 
-from trimnami.scripts.skipHostRm import gzip_file
+from trimnami.scripts.copyOrGzip import gzip_file
 
 
 @pytest.fixture

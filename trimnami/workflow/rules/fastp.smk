@@ -12,7 +12,7 @@ rule fastp_paired_end:
     output:
         r1=temp(os.path.join(dir["fastp"],"{sample}_R1.fastq.gz")),
         r2=temp(os.path.join(dir["fastp"],"{sample}_R2.fastq.gz")),
-        s=temp(os.path.join(dir["fastp"],"{sample}_S.fastq.gz")),
+        s=temp(os.path.join(dir["fastp"],"{sample}_RS.fastq.gz")),
         s1=temp(os.path.join(dir["fastp"],"{sample}_S1.fastq.gz")),
         s2=temp(os.path.join(dir["fastp"],"{sample}_S2.fastq.gz")),
         stats=temp(os.path.join(dir["fastp"],"{sample}.stats.json")),
@@ -69,9 +69,9 @@ rule fastp_single_end:
     input:
         r1=lambda wildcards: samples["reads"][wildcards.sample]["R1"],
     output:
-        r1=temp(os.path.join(dir["fastp"],"{sample}_single.fastq.gz")),
-        stats=temp(os.path.join(dir["fastp"],"{sample}.stats.json")),
-        html=temp(os.path.join(dir["fastp"],"{sample}.stats.html"))
+        r1=temp(os.path.join(dir["fastp"],"{sample}_S.fastq.gz")),
+        stats=temp(os.path.join(dir["fastp"],"{sample}_S.stats.json")),
+        html=temp(os.path.join(dir["fastp"],"{sample}_S.stats.html"))
     benchmark:
         os.path.join(dir["bench"],"fastp.{sample}.txt")
     log:

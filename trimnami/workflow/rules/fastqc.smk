@@ -71,63 +71,15 @@ rule fastqc_unpaired_untrimmed:
         "rm {params.r1}; ")
 
 
-rule fastqc_paired_trimmed:
+rule fastqc_trimmed:
     input:
-        r1 = os.path.join(dir["temp"], "{trimmer}", "{sample}_R1{hostSubsampled}.fastq.gz"),
-        r2 = os.path.join(dir["temp"], "{trimmer}", "{sample}_R2{hostSubsampled}.fastq.gz"),
-        rs = os.path.join(dir["temp"], "{trimmer}", "{sample}_S{hostSubsampled}.fastq.gz"),
+        os.path.join(dir["temp"],"{trimmer}","{file}.fastq.gz"),
     output:
-        r1 = temp(os.path.join(dir["temp"],"{trimmer}","{sample}_R1{hostSubsampled}_fastqc.html")),
-        r2 = temp(os.path.join(dir["temp"],"{trimmer}","{sample}_R2{hostSubsampled}_fastqc.html")),
-        rs = temp(os.path.join(dir["temp"],"{trimmer}","{sample}_S{hostSubsampled}_fastqc.html")),
-        z1 = temp(os.path.join(dir["reports"],"{trimmer}","{sample}_R1{hostSubsampled}_fastqc.zip")),
-        z2 = temp(os.path.join(dir["reports"],"{trimmer}","{sample}_R2{hostSubsampled}_fastqc.zip")),
-        zs = temp(os.path.join(dir["reports"],"{trimmer}","{sample}_S{hostSubsampled}_fastqc.zip")),
-    params:
-        dir = os.path.join(dir["temp"],"{trimmer}"),
-        z1 = os.path.join(dir["temp"],"{trimmer}","{sample}_R1{hostSubsampled}_fastqc.zip"),
-        z2 = os.path.join(dir["temp"],"{trimmer}","{sample}_R2{hostSubsampled}_fastqc.zip"),
-        zs = os.path.join(dir["temp"],"{trimmer}","{sample}_S{hostSubsampled}_fastqc.zip"),
-    conda:
-        os.path.join(dir["env"], "fastqc.yaml")
-    resources:
-        mem_mb=resources["med"]["mem"],
-        mem=str(resources["med"]["mem"]) + "MB",
-        time=resources["med"]["time"]
-    threads:
-        resources["med"]["cpu"]
-    log:
-        os.path.join(dir["log"], "fastqc_paired_trimmed.{sample}.{trimmer}{hostSubsampled}.log")
-    benchmark:
-        os.path.join(dir["bench"],"fastqc_paired_trimmed.{sample}.{trimmer}{hostSubsampled}.txt")
-    shell:
-        ("fastqc {input.r1} {input.r2} "
-            "-t {threads} "
-            "--outdir {params.dir} "
-            "&> {log}; "
-        "if [[ -s {input.rs} ]]; "
-        "then "
-            "fastqc {input.rs} "
-                "-t {threads} "
-                "--outdir {params.dir} "
-                "&> {log}; "
-        "else "
-            "touch {params.zs} {output.rs}; "
-        "fi; "
-        "mv {params.z1} {output.z1}; "
-        "mv {params.z2} {output.z2}; "
-        "mv {params.zs} {output.zs}; ")
-
-
-rule fastqc_single_trimmed:
-    input:
-        os.path.join(dir["temp"],"{trimmer}","{sample}_single{hostSubsampled}.fastq.gz"),
-    output:
-        r=temp(os.path.join(dir["temp"],"{trimmer}","{sample}_single{hostSubsampled}_fastqc.html")),
-        z=temp(os.path.join(dir["reports"],"{trimmer}","{sample}_single{hostSubsampled}_fastqc.zip")),
+        r=temp(os.path.join(dir["temp"],"{trimmer}","{file}_fastqc.html")),
+        z=temp(os.path.join(dir["reports"],"{trimmer}","{file}_fastqc.zip")),
     params:
         dir=os.path.join(dir["temp"],"{trimmer}"),
-        z=os.path.join(dir["temp"],"{trimmer}","{sample}_single{hostSubsampled}_fastqc.zip"),
+        z=os.path.join(dir["temp"],"{trimmer}","{file}_fastqc.zip"),
     conda:
         os.path.join(dir["env"],"fastqc.yaml")
     resources:
@@ -137,15 +89,19 @@ rule fastqc_single_trimmed:
     threads:
         resources["med"]["cpu"]
     log:
-        os.path.join(dir["log"],"fastqc_single_trimmed.{sample}.{trimmer}{hostSubsampled}.log")
+        os.path.join(dir["log"],"fastqc_trimmed.{trimmer}{file}.log")
     benchmark:
-        os.path.join(dir["bench"],"fastqc_single_trimmed.{sample}.{trimmer}{hostSubsampled}.txt")
+        os.path.join(dir["bench"],"fastqc_trimmed.{trimmer}{file}.txt")
     shell:
-        ("fastqc {input} "
-            "-t {threads} "
-            "--outdir {params.dir} "
-            "&> {log}; "
-        "mv {params.z} {output.z}; ")
+        ("if [[ -s {input} ]]; then "
+            "fastqc {input} "
+                "-t {threads} "
+                "--outdir {params.dir} "
+                "&> {log}; "
+            "mv {params.z} {output.z}; "
+        "else "
+            "touch {output}; "
+        "fi; ")
 
 
 rule multiqc_fastqc:

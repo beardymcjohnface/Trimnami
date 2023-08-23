@@ -23,7 +23,7 @@ def main(**kwargs):
     gzip_file(kwargs["input_r1"], kwargs["output_r1"])
     if "input_r2" in kwargs.keys():
         gzip_file(kwargs["input_r2"], kwargs["output_r2"])
-    if "output_s" in kwargs.keys():
+    if "input_s" in kwargs.keys():
         open(kwargs["output_s"], "w").close()
 
 
@@ -32,6 +32,7 @@ if __name__ == "__main__":
         main(
             input_r1=snakemake.input.r1,
             input_r2=snakemake.input.r2,
+            input_s=snakemake.params.s,
             output_r1=snakemake.output.r1,
             output_r2=snakemake.output.r2,
             output_s=snakemake.output.s
