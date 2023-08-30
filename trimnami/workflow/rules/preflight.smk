@@ -62,7 +62,7 @@ if config["args"]["host"] is not None:
         )[0] + ".idx"
     )
 
-if config["args"]["subsample"] is not None:
+if config["args"]["subsample"]:
     config["args"]["subsampleStr"] = ".subsampled"
 
 if config["args"]["fasta"]:

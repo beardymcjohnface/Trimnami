@@ -73,9 +73,9 @@ def common_options(func):
             show_default=True,
         ),
         click.option(
-            "--subsample",
+            "--subsample/--no-subsample",
             default=None,
-            help="Subsample reads to this many bases with rasusa, e.g. 1000, 1m, 1g, 1t",
+            help="Perform subsampling (set in config)",
             show_default=False,
         ),
         click.option(

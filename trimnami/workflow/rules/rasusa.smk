@@ -12,7 +12,7 @@ rule rasusa:
     conda:
         os.path.join(dir["env"], "rasusa.yaml")
     params:
-        bases=lambda wildcards: config["args"]["subsample"] if config["args"]["subsample"] else ""
+        bases=config["qc"]["subsample"]
     benchmark:
         os.path.join(dir["bench"], "rasusa_single.{dir}.{file}.txt")
     log:
@@ -23,7 +23,7 @@ rule rasusa:
                 "-i {input} "
                 "-o {output} "
                 "-O g "
-                "--bases {params.bases} "
+                "{params.bases} "
                 "2> {log}; "
          "else "
             "touch {output}; "
