@@ -14,6 +14,8 @@ trimnami:
             -F 3584
         cutadapt:
             -m 40
+        subsample:
+            --bases 1g
         fastp:
             --qualified_quality_phred 15
             --length_required 90
