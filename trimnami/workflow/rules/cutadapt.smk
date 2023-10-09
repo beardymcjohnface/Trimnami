@@ -40,18 +40,18 @@ rule cutadapt_paired_end:
             "--fasta "
             "{input.r1} "
             "{input.r2} "
-            "&> {log}; "
-        "if [[ -s {params.s} ]]; then "
+            "&> {log}\n\n "
+        "if [[ -s {params.s} ]]\n then "
             "cutadapt "
                 "--cores {threads} "
                 "{params.params} "
                 "-b {input.adapters} "
                 "-o {output.s} "
                 "{params.s} "
-                "&> {log}; "
+                "&> {log}\n "
         "else "
-            "touch {output.s}; "
-        "fi ")
+            "touch {output.s}\n "
+        "fi\n\n ")
 
 
 rule cutadapt_single_end:
@@ -83,7 +83,7 @@ rule cutadapt_single_end:
             "-o {output.r1} "
             "--fasta  "
             "{input.r1} "
-            "&> {log}; ")
+            "&> {log}\n\n ")
 
 
 rule fasta_to_fastq:
@@ -101,8 +101,8 @@ rule fasta_to_fastq:
     log:
         os.path.join(dir["log"],"fasta_to_fastq.{file}.log")
     shell:
-        ("seqtk "
+        "seqtk "
             "seq -F 'B' {input} "
             "| gzip {params.compression} "
             "> {output} "
-            "2> {log}; ")
+            "2> {log}\n\n "

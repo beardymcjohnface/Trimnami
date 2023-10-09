@@ -9,6 +9,6 @@ rule fastq_to_fasta:
     conda:
         os.path.join(dir["env"], "seqtk.yaml")
     shell:
-        ("seqtk seq {input} -A "
+        "seqtk seq {input} -A "
             "| gzip {params.compression} "
-            "> {output}")
+            "> {output}\n\n "
