@@ -15,7 +15,14 @@ trimnami:
         cutadapt:
             -m 40
         subsample:
-            --bases 1g
+            --num 1g
+#        subsample:
+#            --bases 1g
+#        subsample:
+#            --frac 0.5
+#        subsample:
+#            --coverage 100
+#            --genome-size 1m
         fastp:
             --qualified_quality_phred 15
             --length_required 90
