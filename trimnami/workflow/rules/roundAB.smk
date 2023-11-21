@@ -79,7 +79,7 @@ rule remove_3prime_contaminant:
         mem_mb = resources["med"]["mem"],
         mem = str(resources["med"]["mem"]) + "MB",
         javaAlloc = int(0.9 * resources["med"]["mem"]),
-        time = "00:00:01"
+        time = resources["med"]["time"]
     threads:
         resources["med"]["cpu"]
     params:
@@ -135,7 +135,7 @@ rule remove_primer_free_adapter:
         mem_mb = resources["med"]["mem"],
         mem = str(resources["med"]["mem"]) + "MB",
         javaAlloc = int(0.9 * resources["med"]["mem"]),
-        time = "00:00:01"
+        time = resources["med"]["time"]
     threads:
         resources["med"]["cpu"]
     params:
@@ -191,7 +191,7 @@ rule remove_adapter_free_primer:
         mem_mb = resources["med"]["mem"],
         mem = str(resources["med"]["mem"]) + "MB",
         javaAlloc = int(0.9 * resources["med"]["mem"]),
-        time = "00:00:01"
+        time = resources["med"]["time"]
     threads:
         resources["med"]["cpu"]
     params:
@@ -247,7 +247,7 @@ rule remove_vector_contamination:
         mem_mb = resources["med"]["mem"],
         mem = str(resources["med"]["mem"]) + "MB",
         javaAlloc = int(0.9 * resources["med"]["mem"]),
-        time = "00:00:01"
+        time = resources["med"]["time"]
     threads:
         resources["med"]["cpu"]
     params:
@@ -302,7 +302,7 @@ rule remove_low_quality:
         mem_mb = resources["med"]["mem"],
         mem = str(resources["med"]["mem"]) + "MB",
         javaAlloc = int(0.9 * resources["med"]["mem"]),
-        time = "00:00:01"
+        time = resources["med"]["time"]
     threads:
         resources["med"]["cpu"]
     params:
@@ -355,7 +355,7 @@ rule zip_roundAB:
         mem_mb = resources["med"]["mem"],
         mem = str(resources["med"]["mem"]) + "MB",
         javaAlloc = int(0.9 * resources["med"]["mem"]),
-        time = "00:00:01"
+        time = resources["med"]["time"]
     threads:
         resources["med"]["cpu"]
     params:
