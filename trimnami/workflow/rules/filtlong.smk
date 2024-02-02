@@ -54,17 +54,17 @@ rule filtlong_paried:
     log:
         os.path.join(dir["log"], "filtlong_paried.{sample}.log")
     shell:
-        ("filtlong {params.params} {input.r1} 2> {log}"
+        "filtlong {params.params} {input.r1} 2> {log}"
             "| gzip -1 "
-            "> {output.r1}; "
+            "> {output.r1}\n\n "
         "filtlong {params.params} {input.r2} 2> {log}"
             "| gzip -1 "
-            "> {output.r2}; "
-        "if [[ -s {params.s} ]]; "
+            "> {output.r2}\n\n "
+        "if [[ -s {params.s} ]]\n "
         "then "
             "filtlong {params.params} {params.s} 2> {log}"
                 "| gzip -1 "
-                "> {params.s}; "
+                "> {params.s}\n\n "
         "else "
-            "touch {output.s}; "
-        "fi ")
+            "touch {output.s}\n "
+        "fi\n\n "

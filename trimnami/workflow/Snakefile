@@ -57,6 +57,11 @@ rule default_trimmer:
         targets["output"]["fastp"],
 
 
+rule build_envs:
+    input:
+        targets["envs"]
+
+
 rule print_trimmers:
     run:
         print("\nAvailable trimming modules are: \n", file=sys.stderr)

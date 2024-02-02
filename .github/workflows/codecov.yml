@@ -7,16 +7,14 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - '.github/**'
-      - 'build/**'
+      - '.github/workflows/codecov.yml'
       - 'tests/**'
       - 'trimnami/**'
       - 'setup.py'
   pull_request:
     branches: [ "main" ]
     paths:
-      - '.github/**'
-      - 'build/**'
+      - '.github/workflows/codecov.yml'
       - 'tests/**'
       - 'trimnami/**'
       - 'setup.py'
@@ -44,13 +42,15 @@ jobs:
           fetch-depth: 0
 
       # Setup env
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
+          miniforge-version: "latest"
+          miniforge-variant: Mambaforge
           use-mamba: true
           mamba-version: "*"
-          channel-priority: false
-          activate-environment: trimnami
-          environment-file: build/environment.yaml
+          channels: conda-forge,bioconda,defaults
+          channel-priority: strict
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
 

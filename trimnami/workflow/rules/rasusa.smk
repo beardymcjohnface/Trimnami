@@ -12,19 +12,19 @@ rule rasusa:
     conda:
         os.path.join(dir["env"], "rasusa.yaml")
     params:
-        bases=config["qc"]["subsample"]
+        config["qc"]["subsample"]
     benchmark:
         os.path.join(dir["bench"], "rasusa_single.{dir}.{file}.txt")
     log:
         os.path.join(dir["log"], "rasusa_single.{dir}.{file}.log")
     shell:
-        ("if (( $(wc -c {input} | awk '{{print$1}}') > 200 )); then "
+        ("if (( $(wc -c {input} | awk '{{print$1}}') > 200 ))\n then "
             "rasusa "
                 "-i {input} "
                 "-o {output} "
                 "-O g "
-                "{params.bases} "
-                "2> {log}; "
+                "{params} "
+                "2> {log}\n "
          "else "
-            "touch {output}; "
-         "fi ")
+            "touch {output}\n "
+         "fi\n\n ")

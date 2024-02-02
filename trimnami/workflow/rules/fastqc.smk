@@ -93,15 +93,15 @@ rule fastqc_trimmed:
     benchmark:
         os.path.join(dir["bench"],"fastqc_trimmed.{trimmer}{file}.txt")
     shell:
-        ("if [[ -s {input} ]]; then "
+        "if [[ -s {input} ]]\n then "
             "fastqc {input} "
                 "-t {threads} "
                 "--outdir {params.dir} "
-                "&> {log}; "
-            "mv {params.z} {output.z}; "
+                "&> {log}\n\n "
+            "mv {params.z} {output.z}\n\n "
         "else "
-            "touch {output}; "
-        "fi; ")
+            "touch {output}\n "
+        "fi\n\n "
 
 
 rule multiqc_fastqc:
@@ -118,4 +118,4 @@ rule multiqc_fastqc:
     benchmark:
         os.path.join(dir["bench"],"multiqc_fastqc.{trimUntrim}.txt")
     shell:
-        "multiqc {params.dir} -n {output} --no-data-dir 2> {log}"
+        "multiqc {params.dir} -n {output} --no-data-dir 2> {log}\n\n"

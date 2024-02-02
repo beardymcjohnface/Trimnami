@@ -9,3 +9,12 @@ rule sample_manifest:
     run:
         from metasnek import fastq_finder
         fastq_finder.write_samples_tsv(params.sample_dict,output.tsv)
+
+
+rule buildEnv:
+    output:
+        os.path.join(dir["temp"], "{env}.done")
+    conda:
+        lambda wildcards: os.path.join(dir["env"], wildcards.env)
+    shell:
+        "touch {output}"

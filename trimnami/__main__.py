@@ -5,17 +5,15 @@ Entrypoint for Trimnami
 import os
 import click
 
-from snaketool_utils.cli_utils import OrderedCommands, run_snakemake, copy_config, echo_click
+from snaketool_utils.cli_utils import (
+    OrderedCommands,
+    run_snakemake,
+    copy_config,
+    echo_click,
+)
 
 
 def snake_base(rel_path):
-    """Get the filepath to a Snaketool system file (relative to __main__.py)
-
-    Args:
-        rel_path (str): Filepath relative to __main__.py
-
-    Returns (str): Resolved filepath
-    """
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), rel_path)
 
 
@@ -39,9 +37,7 @@ def default_to_output(ctx, param, value):
 
 
 def common_options(func):
-    """Common command line args
-    Define common command line args here, and include them with the @common_options decorator below.
-    """
+    """General Snakemake-related options"""
     options = [
         click.option(
             "--output",
@@ -61,6 +57,66 @@ def common_options(func):
             "--threads", help="Number of threads to use", default=8, show_default=True
         ),
         click.option(
+            "--use-conda/--no-use-conda",
+            default=True,
+            help="Use conda for Snakemake rules",
+            show_default=True,
+        ),
+        click.option(
+            "--conda-prefix",
+            default=snake_base(os.path.join("workflow", "conda")),
+            help="Custom conda env directory",
+            type=click.Path(),
+            show_default=False,
+        ),
+        click.option(
+            "--system_config",
+            default=snake_base(os.path.join("config", "config.yaml")),
+            type=click.Path(),
+            hidden=True,
+        ),
+        click.option(
+            "--snake-default",
+            multiple=True,
+            default=[
+                "--printshellcmds",
+                "--nolock",
+                "--show-failed-logs",
+                "--conda-frontend conda"
+            ],
+            help="Customise Snakemake runtime args",
+            show_default=True,
+        ),
+        click.option(
+            "--log",
+            default="trimnami.log",
+            callback=default_to_output,
+            hidden=True,
+        ),
+        click.argument("snake_args", nargs=-1),
+    ]
+    for option in reversed(options):
+        func = option(func)
+    return func
+
+
+def run_options(func):
+    """Options related to Trmnami pipeline"""
+    options = [
+        click.option(
+            "--host",
+            help="Host genome fasta for filtering",
+            show_default=False,
+            required=False,
+        ),
+        click.option(
+            "--minimap",
+            help="Minimap preset",
+            default="sr",
+            show_default=True,
+            type=click.Choice(["sr", "map-pb", "map-ont", "map-hifi"]),
+        ),
+        click.option(
             "--fastqc/--no-fastqc",
             default=False,
             help="Run fastqc on trimmed and untrimmed reads",
@@ -75,41 +131,9 @@ def common_options(func):
         click.option(
             "--subsample/--no-subsample",
             default=None,
-            help="Perform subsampling (set in config)",
+            help="Perform subsampling (set in config file)",
             show_default=False,
         ),
-        click.option(
-            "--use-conda/--no-use-conda",
-            default=True,
-            help="Use conda for Snakemake rules",
-            show_default=True,
-        ),
-        click.option(
-            "--conda-prefix",
-            default=snake_base(os.path.join("workflow", "conda")),
-            help="Custom conda env directory",
-            type=click.Path(),
-            show_default=False,
-        ),
-        click.option(
-            "--snake-default",
-            multiple=True,
-            default=[
-                "--rerun-incomplete",
-                "--printshellcmds",
-                "--nolock",
-                "--show-failed-logs",
-            ],
-            help="Customise Snakemake runtime args",
-            show_default=True,
-        ),
-        click.option(
-            "--log",
-            default="trimnami.log",
-            callback=default_to_output,
-            hidden=True,
-        ),
-        click.argument("snake_args", nargs=-1),
     ]
     for option in reversed(options):
         func = option(func)
@@ -129,14 +153,16 @@ def cli():
 
 
 def print_splash():
-    click.echo("""\b
+    click.echo(
+        """\b
 ████████╗██████╗ ██╗███╗   ███╗███╗   ██╗ █████╗ ███╗   ███╗██╗
 ╚══██╔══╝██╔══██╗██║████╗ ████║████╗  ██║██╔══██╗████╗ ████║██║
    ██║   ██████╔╝██║██╔████╔██║██╔██╗ ██║███████║██╔████╔██║██║
    ██║   ██╔══██╗██║██║╚██╔╝██║██║╚██╗██║██╔══██║██║╚██╔╝██║██║
    ██║   ██║  ██║██║██║ ╚═╝ ██║██║ ╚████║██║  ██║██║ ╚═╝ ██║██║
    ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝
-""")
+"""
+    )
 
 
 help_msg_extra = """
@@ -170,34 +196,16 @@ Available targets:
         help_option_names=["-h", "--help"], ignore_unknown_options=True
     ),
 )
-@click.option("--reads", help="Input file/directory", type=str, required=True)
-@click.option('--host', help='Host genome fasta for filtering', show_default=False, required=False)
-@click.option("--minimap", help="Minimap preset", default="sr", show_default=True,
-              type=click.Choice(["sr", "map-pb", "map-ont", "map-hifi"]))
+@run_options
 @common_options
+@click.option("--reads", help="Input file/directory", type=str, required=True)
 def run(**kwargs):
     """Run Trimnami"""
-    # Config to add or update in configfile
-    merge_config = {
-        "trimnami": {
-            "args": {
-                "reads": kwargs["reads"],
-                "output": kwargs["output"],
-                "host": kwargs["host"],
-                "fastqc": kwargs["fastqc"],
-                "fasta": kwargs["fasta"],
-                "subsample": kwargs["subsample"],
-                "minimap": kwargs["minimap"],
-                "log": kwargs["log"]
-            }
-        }
-    }
 
-    # run!
+    merge_config = {"trimnami": {"args": kwargs}}
+
     run_snakemake(
-        # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
-        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
         **kwargs
     )
@@ -209,30 +217,19 @@ def run(**kwargs):
         help_option_names=["-h", "--help"], ignore_unknown_options=True
     ),
 )
+@run_options
 @common_options
 def test(**kwargs):
     """Run Trimnami with the test dataset"""
-    # Config to add or update in configfile
-    merge_config = {
-        "trimnami": {
-            "args": {
-                "reads": snake_base(os.path.join("test_data")),
-                "host": None,
-                "fastqc": kwargs["fastqc"],
-                "fasta": kwargs["fasta"],
-                "subsample": kwargs["subsample"],
-                "output": kwargs["output"],
-                "minimap": "sr",
-                "log": kwargs["log"]
-            }
-        }
-    }
 
-    # run!
+    merge_config = {"trimnami": {"args": kwargs}}
+
+    merge_config["trimnami"]["args"]["reads"] = snake_base(os.path.join("test_data"))
+    merge_config["trimnami"]["args"]["host"] = None
+    merge_config["trimnami"]["args"]["minimap"] = "sr"
+
     run_snakemake(
-        # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
-        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
         **kwargs
     )
@@ -244,30 +241,21 @@ def test(**kwargs):
         help_option_names=["-h", "--help"], ignore_unknown_options=True
     ),
 )
+@run_options
 @common_options
 def testhost(**kwargs):
-    """Run Trimnami with the test dataset and test host"""
-    # Config to add or update in configfile
-    merge_config = {
-        "trimnami": {
-            "args": {
-                "reads": snake_base(os.path.join("test_data")),
-                "host": snake_base(os.path.join("test_data", "ref.fna")),
-                "output": kwargs["output"],
-                "fastqc": kwargs["fastqc"],
-                "fasta": kwargs["fasta"],
-                "subsample": kwargs["subsample"],
-                "minimap": "sr",
-                "log": kwargs["log"]
-            }
-        }
-    }
+    """Test Trimnami with the test SR dataset and test host"""
 
-    # run!
+    merge_config = {"trimnami": {"args": kwargs}}
+
+    merge_config["trimnami"]["args"]["reads"] = snake_base(os.path.join("test_data"))
+    merge_config["trimnami"]["args"]["host"] = snake_base(
+        os.path.join("test_data", "ref.fna")
+    )
+    merge_config["trimnami"]["args"]["minimap"] = "sr"
+
     run_snakemake(
-        # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
-        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
         **kwargs
     )
@@ -279,32 +267,25 @@ def testhost(**kwargs):
         help_option_names=["-h", "--help"], ignore_unknown_options=True
     ),
 )
+@run_options
 @common_options
 def testnp(**kwargs):
-    """Run Trimnami with the test dataset and test host"""
-    # Config to add or update in configfile
-    merge_config = {
-        "trimnami": {
-            "args": {
-                "reads": snake_base(os.path.join("test_data", "nanopore")),
-                "host": snake_base(os.path.join("test_data", "ref.fna")),
-                "output": kwargs["output"],
-                "fastqc": kwargs["fastqc"],
-                "fasta": kwargs["fasta"],
-                "subsample": kwargs["subsample"],
-                "minimap": "map-ont",
-                "log": kwargs["log"]
-            }
-        }
-    }
+    """Test Trimnami with the test LR dataset and test host"""
+
+    merge_config = {"trimnami": {"args": kwargs}}
+
+    merge_config["trimnami"]["args"]["reads"] = snake_base(
+        os.path.join("test_data", "nanopore")
+    )
+    merge_config["trimnami"]["args"]["host"] = snake_base(
+        os.path.join("test_data", "ref.fna")
+    )
+    merge_config["trimnami"]["args"]["minimap"] = "map-ont"
 
     kwargs["snake_args"] = ["filtlong"]
 
-    # run!
     run_snakemake(
-        # Full path to Snakefile
         snakefile_path=snake_base(os.path.join("workflow", "Snakefile")),
-        system_config=snake_base(os.path.join("config", "config.yaml")),
         merge_config=merge_config,
         **kwargs
     )

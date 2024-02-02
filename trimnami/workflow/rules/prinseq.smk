@@ -30,7 +30,7 @@ rule prinseq_paired:
     benchmark:
         os.path.join(dir["bench"],"prinseq.{sample}.txt")
     shell:
-        ("prinseq++ {params.params} "
+        "prinseq++ {params.params} "
             "-out_gz "
             "-threads {threads} "
             "-out_good {output.r1} "
@@ -40,19 +40,19 @@ rule prinseq_paired:
             "-out_bad /dev/null "
             "-out_bad2 /dev/null "
             "-fastq {input.r1} "
-            "-fastq2 {input.r2}  &> {log}; "
-        "if [[ -s {params.s} ]]; "
+            "-fastq2 {input.r2}  &> {log}\n\n "
+        "if [[ -s {params.s} ]]\n "
         "then "
             "prinseq++ {params.params} "
                 "-out_gz "
                 "-threads {threads} "
                 "-out_good {output.s} "
                 "-out_bad /dev/null "
-                "-fastq {input.r1} &> {log}; "
+                "-fastq {input.r1} &> {log}\n\n "
         "else "
-            "touch {output.s}; "
-        "fi; "
-        "cat {output.s1} {output.s2} >> {output.s}; ")
+            "touch {output.s}\n "
+        "fi\n\n "
+        "cat {output.s1} {output.s2} >> {output.s}\n\n "
 
 
 rule prinseq_single:
@@ -75,9 +75,9 @@ rule prinseq_single:
     benchmark:
         os.path.join(dir["bench"],"prinseq.{sample}.txt")
     shell:
-        ("prinseq++ {params.params} "
+        "prinseq++ {params.params} "
             "-out_gz "
             "-threads {threads} "
             "-out_good {output.r1} "
             "-out_bad /dev/null "
-            "-fastq {input.r1} &> {log}; ")
+            "-fastq {input.r1} &> {log}\n\n "

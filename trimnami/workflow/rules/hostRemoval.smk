@@ -19,7 +19,7 @@ rule index_host_genome:
     log:
         os.path.join(dir["log"],"index_host_genome.log")
     shell:
-        "minimap2 -t {threads} {params} -d {output} {input} &> {log}"
+        "minimap2 -t {threads} {params} -d {output} {input} &> {log}\n\n"
 
 
 rule host_removal_mapping_paired:
@@ -55,7 +55,7 @@ rule host_removal_mapping_paired:
     conda:
         os.path.join(dir["env"],"minimap2.yaml")
     shell:
-        ("minimap2 "
+        "minimap2 "
             "-ax {params.minimap_mode} "
             "-t {threads} "
             "--secondary=no "
@@ -70,9 +70,9 @@ rule host_removal_mapping_paired:
             "-2 {output.r2} "
             "-0 {output.O} "
             "-s {output.rs} "
-            "2> {log.fq}; "
-        "cat {output.O} >> {output.rs}; "
-        "if [[ -s {input.s} ]]; "
+            "2> {log.fq}\n\n "
+        "cat {output.O} >> {output.rs}\n\n "
+        "if [[ -s {input.s} ]]\n "
         "then "
             "minimap2 "
                 "-ax {params.minimap_mode} "
@@ -89,11 +89,11 @@ rule host_removal_mapping_paired:
                 "-o {output.o} "
                 "-0 {output.O} "
                 "-s {output.s} "
-                "2> {log.fq}; "
-            "cat {output.o} {output.O} {output.s} >> {output.rs}; "
-         "else "
-            "touch {output.o} {output.O} {output.s}; "
-        "fi ")
+                "2> {log.fq}\n\n "
+            "cat {output.o} {output.O} {output.s} >> {output.rs}\n\n "
+        "else "
+            "touch {output.o} {output.O} {output.s}\n "
+        "fi\n\n "
 
 
 rule host_removal_mapping_single:
@@ -124,7 +124,7 @@ rule host_removal_mapping_single:
     conda:
         os.path.join(dir["env"],"minimap2.yaml")
     shell:
-        ("minimap2 "
+        "minimap2 "
             "-ax {params.minimap_mode} "
             "-t {threads} "
             "--secondary=no "
@@ -139,5 +139,5 @@ rule host_removal_mapping_single:
             "-o {output.r1} "
             "-0 {output.o} "
             "-s {output.s} "
-            "2> {log.fq}; "
-        "cat {output.o} {output.s} >> {output.r1}; ")
+            "2> {log.fq}\n\n "
+        "cat {output.o} {output.s} >> {output.r1}\n\n "

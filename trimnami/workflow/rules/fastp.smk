@@ -34,7 +34,7 @@ rule fastp_paired_end:
         compression=config["qc"]["compression"],
         s= lambda wildcards: samples["reads"][wildcards.sample]["S"],
     shell:
-        ("fastp "
+        "fastp "
             "-i {input.r1} "
             "-I {input.r2} "
             "-o {output.r1} "
@@ -46,8 +46,8 @@ rule fastp_paired_end:
             "-h {output.html} "
             "--thread {threads} "
             "{params.fastp} "
-            "2> {log}; "
-        "if [[ -s {params.s} ]]; "
+            "2> {log}\n\n "
+        "if [[ -s {params.s} ]]\n "
         "then "
             "fastp "
             "-i {params.s} "
@@ -57,11 +57,11 @@ rule fastp_paired_end:
             "-h {output.html} "
             "--thread {threads} "
             "{params.fastp} "
-            "2> {log}; "
+            "2> {log}\n "
         "else "
-            "touch {output.s}; "
-        "fi; "
-        "cat {output.s1} {output.s2} >> {output.s}; ")
+            "touch {output.s}\n "
+        "fi\n\n "
+        "cat {output.s1} {output.s2} >> {output.s}\n\n "
 
 
 rule fastp_single_end:
@@ -88,7 +88,7 @@ rule fastp_single_end:
         fastp=config["qc"]["fastp"],
         compression=config["qc"]["compression"]
     shell:
-        ("fastp "
+        "fastp "
             "-i {input.r1} "
             "-o {output.r1} "
             "-z {params.compression} "
@@ -96,4 +96,4 @@ rule fastp_single_end:
             "-h {output.html} "
             "--thread {threads} "
             "{params.fastp} "
-            "2> {log}; ")
+            "2> {log}\n\n "

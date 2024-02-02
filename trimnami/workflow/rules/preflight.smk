@@ -135,3 +135,11 @@ for trimmer in config["trimmers"]:
                 os.path.join(dir["reports"], trimmer, "{file}"),
                 file=samples["reads"][sample_name]["fastqc_targets"]
             )
+
+
+# Add targets for pre-building the environments
+targets["envs"] = []
+
+for filename in os.listdir(dir["env"]):
+    if filename.endswith(".yaml") or filename.endswith(".yml"):
+        targets["envs"].append(os.path.join(dir["temp"], filename + ".done"))
