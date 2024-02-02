@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - '.github/**'
+      - '.github/workflows/codecov.yml'
       - 'build/**'
       - 'tests/**'
       - 'trimnami/**'
@@ -15,7 +15,7 @@ on:
   pull_request:
     branches: [ "main" ]
     paths:
-      - '.github/**'
+      - '.github/workflows/codecov.yml'
       - 'build/**'
       - 'tests/**'
       - 'trimnami/**'
@@ -48,9 +48,7 @@ jobs:
         with:
           use-mamba: true
           mamba-version: "*"
-          channel-priority: false
-          activate-environment: trimnami
-          environment-file: build/environment.yaml
+          channel-priority: strict
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
 
