@@ -32,9 +32,9 @@ CLASSIFIERS = [
     "Natural Language :: English",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 
@@ -42,7 +42,7 @@ setup(
     name="trimnami",
     packages=find_packages(),
     url="https://github.com/beardymcjohnface/Trimnami",
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     description="Trim lots of metagenomics samples all at once.",
     long_description=get_description(),
     long_description_content_type="text/markdown",
@@ -53,7 +53,8 @@ setup(
     py_modules=["trimnami"],
     install_requires=[
         "snaketool-utils>=0.0.4",
-        "snakemake>=7.14.0",
+        "snakemake>=7.14.0,<8",
+        "pulp<2.8",
         "pyyaml>=6.0",
         "Click>=8.1.3",
         "metasnek>=0.0.8",
