@@ -44,10 +44,14 @@ jobs:
           fetch-depth: 0
 
       # Setup env
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
+          miniforge-version: "latest"
+          miniforge-variant: Mambaforge
           use-mamba: true
           mamba-version: "*"
+          channels: conda-forge,bioconda,defaults
           channel-priority: strict
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
