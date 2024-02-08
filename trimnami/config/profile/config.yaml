@@ -1,0 +1,6 @@
+latency-wait: 100
+restart-times: 0
+printshellcmds: True
+nolock: True
+show-failed-logs: True
+conda-frontend: conda
