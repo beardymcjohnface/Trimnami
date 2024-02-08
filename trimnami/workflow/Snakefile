@@ -22,9 +22,9 @@ onerror:
 
 
 wildcard_constraints:
-    host = ".{0}|\.hostRm|\.hostRm_s",
-    subsample = ".{0}|\.subsampled",
-    hostSubsampled = ".{0}|.+"
+    host = r".{0}|\.hostRm|\.hostRm_s",
+    subsample = r".{0}|\.subsampled",
+    hostSubsampled = r".{0}|.+"
 
 
 """
