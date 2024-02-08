@@ -52,8 +52,8 @@ setup(
     data_files=get_data_files(),
     py_modules=["trimnami"],
     install_requires=[
-        "snaketool-utils>=0.0.4",
-        "snakemake>=7.14.0,<8",
+        "snaketool-utils>=0.0.5",
+        "snakemake>=7.29,<8",
         "pulp<2.8",
         "pyyaml>=6.0",
         "Click>=8.1.3",
