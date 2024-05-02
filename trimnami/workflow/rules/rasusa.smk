@@ -19,7 +19,7 @@ rule rasusa:
         os.path.join(dir["log"], "rasusa_single.{dir}.{file}.log")
     shell:
         ("if (( $(wc -c {input} | awk '{{print$1}}') > 200 ))\n then "
-            "rasusa "
+            "rasusa reads "
                 "-o {output} "
                 "-O g "
                 "{params} "
