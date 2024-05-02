@@ -8,7 +8,7 @@ import click
 from snaketool_utils.cli_utils import (
     OrderedCommands,
     run_snakemake,
-    copy_config,
+    initialise_config,
     echo_click,
 )
 
@@ -54,6 +54,12 @@ def common_options(func):
             help="Custom config file [default: (outputDir)/trimnami.config.yaml]",
         ),
         click.option(
+            "--system_config",
+            default=snake_base(os.path.join("config", "config.yaml")),
+            type=click.Path(),
+            hidden=True,
+        ),
+        click.option(
             "--threads", help="Number of threads to use", default=8, show_default=True
         ),
         click.option(
@@ -70,22 +76,17 @@ def common_options(func):
             show_default=False,
         ),
         click.option(
-            "--system_config",
-            default=snake_base(os.path.join("config", "config.yaml")),
-            type=click.Path(),
-            hidden=True,
+            "--workflow-profile",
+            default="trimnami.profile",
+            show_default=False,
+            callback=default_to_output,
+            help="Custom config file [default: (outputDir)/trimnami.profile/]",
         ),
         click.option(
-            "--snake-default",
-            multiple=True,
-            default=[
-                "--printshellcmds",
-                "--nolock",
-                "--show-failed-logs",
-                "--conda-frontend conda"
-            ],
-            help="Customise Snakemake runtime args",
-            show_default=True,
+            "--system-workflow-profile",
+            default=snake_base(os.path.join("config", "profile", "config.yaml")),
+            help="Default workflow profile",
+            hidden=True,
         ),
         click.option(
             "--log",
@@ -293,9 +294,9 @@ def testnp(**kwargs):
 
 @click.command()
 @common_options
-def config(configfile, **kwargs):
+def config(**kwargs):
     """Copy the system default config file"""
-    copy_config(configfile)
+    initialise_config(**kwargs)
 
 
 @click.command()
