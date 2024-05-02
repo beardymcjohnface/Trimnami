@@ -20,10 +20,10 @@ rule rasusa:
     shell:
         ("if (( $(wc -c {input} | awk '{{print$1}}') > 200 ))\n then "
             "rasusa "
-                "-i {input} "
                 "-o {output} "
                 "-O g "
                 "{params} "
+                "{input} "
                 "2> {log}\n "
          "else "
             "touch {output}\n "

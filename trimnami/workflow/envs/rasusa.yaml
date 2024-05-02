@@ -4,4 +4,4 @@ channels:
     - bioconda
     - defaults
 dependencies:
-    - rasusa>=0.6.0
+    - rasusa>=1.0.0
